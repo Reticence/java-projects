@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,6 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.meridian.module.Oracle2Mysql;
 import com.meridian.nodules.EnterClass;
 import com.meridian.nodules.model.NoduleData;
 import com.meridian.utils.ConnectionPool;
@@ -99,7 +102,7 @@ public class TestCode {
 
         /** tianFangDa数据整理 **/
         // 获取index
-        // tianFangDa(sourcePath, false, true);
+         tianFangDa("D:\\Temporary Space\\Export-Folder\\湖北20原始报告", false, false, true);
         // 获取原始数据
 //         tianFangDa("T:/tfd/湖北中山医院/", false, false, true);
 //         tianFangDa("T:/tfd/解放军161医院/", false, false, true);
@@ -177,11 +180,38 @@ public class TestCode {
         // }
         
         /* 空军总医院数据提取 */
-        task20171013("T:/kongzong/");
+//        task20171013("T:/kongzong/");
 
         // updateTiradsResult();
 
         // continuousData();
+
+
+//        String[] sids = { "gbnew", "gbold", "gjnew", "gjold" };
+//        for (final String sid : sids) {
+//            Runnable runnable = new Runnable() {
+//                public void run() {
+//                    Set<String> targets = new HashSet<String>();
+////                    targets.add("pe_dept_result_dict");
+////                    targets.add("pe_master_index");
+//                    targets.add("pe_dept_result_items");
+//                    if (sid.endsWith("old")) {
+//                        targets.add("pe_assem_vs_exam");
+//                        targets.add("pe_dept_dict");
+//                        targets.add("pe_item_dict");
+//                    }
+//                    Oracle2Mysql o2m = new Oracle2Mysql();
+//                    o2m.set(targets, sid, 100000);
+//                    o2m.start();
+//                }
+//            };
+//            Thread thread = new Thread(runnable);
+//            thread.start();
+//        }
+        Set<String> targets = new HashSet<String>();
+        Oracle2Mysql o2m = new Oracle2Mysql();
+        o2m.set(targets, "orcl", 100000);
+        o2m.start();
 
         LOGGER.info(getMemoryInfo());
     }

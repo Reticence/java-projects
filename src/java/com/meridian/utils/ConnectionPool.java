@@ -154,6 +154,7 @@ public class ConnectionPool {
         try {
             connection.createStatement().executeUpdate(sql);
         } catch (SQLException e) {
+            LOG.error(e.toString());
             return false;
         } finally {
             releaseConnection(connection);
@@ -178,7 +179,7 @@ public class ConnectionPool {
         }
     }
     
-    public void clearConnectionPool() {
+    private void clearConnectionPool() {
         while (true) {
             if (connectionList.size() < currentSize && connectionList.size() > 1) {
                 MysqlConnect.closeConnection(connectionList.getFirst());

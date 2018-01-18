@@ -57,10 +57,10 @@ public class MysqlConnect {
     
     public static Connection getConnection(String url, String username, String password) {
         Connection conn = null;
-        LOG.info(url);
         try {
             conn = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
+            LOG.error(url);
             LOG.error("MySQL error(connect)");
         }
         return conn;

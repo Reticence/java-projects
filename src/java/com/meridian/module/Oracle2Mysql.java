@@ -33,7 +33,7 @@ public class Oracle2Mysql {
     private static Logger LOG = LoggerFactory.getLogger(Oracle2Mysql.class);
     private static DecimalFormat DF = new DecimalFormat("#,###");
     private static String SF = "%1$10s";
-    
+
     private ConnectionPool pool;
     private BlockingQueue<String[]> queue = new ArrayBlockingQueue<String[]>(10);
     private final String[] stopObject = new String[2];
@@ -45,14 +45,14 @@ public class Oracle2Mysql {
     private String sid;
     private int numRows;
     private String savePath;
-    
+
     public Oracle2Mysql(String host, String port, String username, String password) {
         this.host = host;
         this.port = port;
         this.username = username;
         this.password = password;
     }
-    
+
     public void set(Set<String> targets, String sid, int numRows, String savePath) {
         this.targets = new HashSet<String>();
         for (String target : targets) {
@@ -62,7 +62,7 @@ public class Oracle2Mysql {
         this.numRows = numRows;
         this.savePath = savePath;
     }
-    
+
     public void start() {
         Runnable runnable = new Runnable() {
             public void run() {
@@ -72,10 +72,14 @@ public class Oracle2Mysql {
         Thread thread = new Thread(runnable);
         thread.start();
         
-        execInsert();
-        pool.colse();
+        try {
+            Thread.sleep(1000 * 2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        execOperation();
     }
-    
+
     private Connection oracleConn() {
         Connection conn = null;
         try {
@@ -93,7 +97,7 @@ public class Oracle2Mysql {
         }
         return conn;
     }
-    
+
     private void queryFromOracle() {
         Connection conn = oracleConn();
         try {
@@ -106,7 +110,9 @@ public class Oracle2Mysql {
             while (rs.next()) {
                 String table = rs.getString(1).toUpperCase();
                 if (targets.contains(table)) {
-                    pool.execUpdate("TRUNCATE TABLE " + sid + "." + table);
+                    if (StringUtils.isBlank(savePath)) {
+                        pool.execUpdate("TRUNCATE TABLE " + sid + "." + table);
+                    }
                     queryAndWrite(conn, table);
                 }
             }
@@ -124,7 +130,7 @@ public class Oracle2Mysql {
             }
         }
     }
-    
+
     private void queryAndWrite(Connection conn, String table) {
         String sqlPrepare = "INSERT INTO " + sid + "." + table + " VALUES ";
         try {
@@ -168,7 +174,7 @@ public class Oracle2Mysql {
             e.printStackTrace();
         }
     }
-    
+
     private void putInfos(StringBuffer values, String progress) {
         values.deleteCharAt(values.length() - 1);
         String[] infos = { values.toString(), progress };
@@ -178,14 +184,15 @@ public class Oracle2Mysql {
             e.printStackTrace();
         }
     }
-    
-    private void execInsert() {
+
+    private void execOperation() {
         try {
             if (StringUtils.isBlank(savePath)) {
                 pool = new ConnectionPool(5);
                 while (true) {
                     String[] infos = queue.take();
                     if (stopObject == infos) {
+                        pool.colse();
                         return;
                     }
                     boolean b = pool.execUpdate(infos[0]);
@@ -201,6 +208,7 @@ public class Oracle2Mysql {
                     }
                     bw.write(infos[0]);
                     bw.newLine();
+                    LOG.info("Write to file... " + infos[1]);
                 }
             }
         } catch (InterruptedException e) {

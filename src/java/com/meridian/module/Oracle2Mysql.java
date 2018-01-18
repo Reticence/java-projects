@@ -1,5 +1,9 @@
 package com.meridian.module;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,23 +33,36 @@ public class Oracle2Mysql {
     private static Logger LOG = LoggerFactory.getLogger(Oracle2Mysql.class);
     private static DecimalFormat DF = new DecimalFormat("#,###");
     private static String SF = "%1$10s";
-
-    private ConnectionPool pool = new ConnectionPool(5);
+    
+    private ConnectionPool pool;
     private BlockingQueue<String[]> queue = new ArrayBlockingQueue<String[]>(10);
     private final String[] stopObject = new String[2];
     private Set<String> targets;
+    private String host;
+    private String port;
+    private String username;
+    private String password;
     private String sid;
     private int numRows;
-
-    public void set(Set<String> targets, String sid, int numRows) {
+    private String savePath;
+    
+    public Oracle2Mysql(String host, String port, String username, String password) {
+        this.host = host;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+    }
+    
+    public void set(Set<String> targets, String sid, int numRows, String savePath) {
         this.targets = new HashSet<String>();
         for (String target : targets) {
             this.targets.add(target.toUpperCase());
         }
         this.sid = sid;
         this.numRows = numRows;
+        this.savePath = savePath;
     }
-
+    
     public void start() {
         Runnable runnable = new Runnable() {
             public void run() {
@@ -53,12 +71,12 @@ public class Oracle2Mysql {
         };
         Thread thread = new Thread(runnable);
         thread.start();
-
+        
         execInsert();
         pool.colse();
     }
-
-    private Connection oracleConn(String username, String password) {
+    
+    private Connection oracleConn() {
         Connection conn = null;
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -68,15 +86,16 @@ public class Oracle2Mysql {
         }
         try {
             // "jdbc:oracle:thin:@计算机名称:监听端口:系统实例名", username, password,
-            conn = DriverManager.getConnection("jdbc:oracle:thin:@10.1.1.102:1521:" + sid, username, password); // phyexam/meridian@10.1.1.102:1521
+            conn = DriverManager.getConnection("jdbc:oracle:thin:@" + host + ":" + port + ":" + sid, username,
+                    password); // phyexam/meridian@10.1.1.102:1521
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return conn;
     }
-
+    
     private void queryFromOracle() {
-        Connection conn = oracleConn("phyexam", "meridian");
+        Connection conn = oracleConn();
         try {
             if (conn == null) {
                 LOG.error("连接失败");
@@ -87,7 +106,7 @@ public class Oracle2Mysql {
             while (rs.next()) {
                 String table = rs.getString(1).toUpperCase();
                 if (targets.contains(table)) {
-                    pool.execUpdate("TRUNCATE TABLE jfjzyy301_" + sid + "." + table);
+                    pool.execUpdate("TRUNCATE TABLE " + sid + "." + table);
                     queryAndWrite(conn, table);
                 }
             }
@@ -105,9 +124,9 @@ public class Oracle2Mysql {
             }
         }
     }
-
+    
     private void queryAndWrite(Connection conn, String table) {
-        String sqlPrepare = "INSERT INTO jfjzyy301_" + sid + "." + table + " VALUES ";
+        String sqlPrepare = "INSERT INTO " + sid + "." + table + " VALUES ";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM " + table);
@@ -149,7 +168,7 @@ public class Oracle2Mysql {
             e.printStackTrace();
         }
     }
-
+    
     private void putInfos(StringBuffer values, String progress) {
         values.deleteCharAt(values.length() - 1);
         String[] infos = { values.toString(), progress };
@@ -159,18 +178,34 @@ public class Oracle2Mysql {
             e.printStackTrace();
         }
     }
-
+    
     private void execInsert() {
         try {
-            while (true) {
-                String[] infos = queue.take();
-                if (stopObject == infos) {
-                    return;
+            if (StringUtils.isBlank(savePath)) {
+                pool = new ConnectionPool(5);
+                while (true) {
+                    String[] infos = queue.take();
+                    if (stopObject == infos) {
+                        return;
+                    }
+                    boolean b = pool.execUpdate(infos[0]);
+                    LOG.info("Transfer " + b + ": " + infos[1]);
                 }
-                boolean b = pool.execUpdate(infos[0]);
-                LOG.info("Transfer " + b + ": " + infos[1]);
+            } else {
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(savePath), "UTF-8"));
+                while (true) {
+                    String[] infos = queue.take();
+                    if (stopObject == infos) {
+                        bw.close();
+                        return;
+                    }
+                    bw.write(infos[0]);
+                    bw.newLine();
+                }
             }
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

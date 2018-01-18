@@ -62,29 +62,29 @@ import com.meridian.utils.PoiUtil;
 public class TestCode {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(TestCode.class);
-
+    
     /** 全角对应于ASCII表的可见字符从！开始，偏移值为65281 **/
     static final char SBC_CHAR_START = 65281; // 全角！
-
+    
     /** 全角对应于ASCII表的可见字符到～结束，偏移值为65374 **/
     static final char SBC_CHAR_END = 65374; // 全角～
-
+    
     /** ASCII表中除空格外的可见字符与对应的全角字符的相对偏移 **/
     static final int CONVERT_STEP = 65248; // 全角半角转换间隔
-
+    
     private static String desktopPath = "D:/Desktop/";
-
+    
     /**
      * @param args
      */
     public static void main(String[] args) {
         /** 非结构化数据内容导出 **/
-//         createContents("T:/test/aaa/");
-
+        // createContents("T:/test/aaa/");
+        
         /** 武汉市中心医院综述解析 **/
         // overviewAnalysis("D:/Desktop/whszxyy.txt",
         // "D:/Desktop/whszxyy_result.txt");
-
+        
         /** 甲状腺结节风险评估 **/
         // MysqlConnect.init();
         // Constant constant = new Constant();
@@ -99,32 +99,32 @@ public class TestCode {
         //
         // RiskAssessment ra = new RiskAssessment(constant, pdfDbMethod);
         // ra.assessmentProcess(1179);
-
+        
         /** tianFangDa数据整理 **/
         // 获取index
-         tianFangDa("D:\\Temporary Space\\Export-Folder\\湖北20原始报告", false, false, true);
+        tianFangDa("D:\\Temporary Space\\Export-Folder\\湖北20原始报告", false, false, true);
         // 获取原始数据
-//         tianFangDa("T:/tfd/湖北中山医院/", false, false, true);
-//         tianFangDa("T:/tfd/解放军161医院/", false, false, true);
-//         tianFangDa("T:/tfd/荆门市第二人民医院/", false, false, true);
-//         tianFangDa("T:/tfd/荆州市第一人民医院/", false, false, true);
-//         tianFangDa("T:/tfd/荆州市中心医院/", false, false, true);
-//         tianFangDa("T:/tfd/荆州市中医医院/", false, false, true);
-//         tianFangDa("T:/tfd/荆州松滋市人民医院/", false, false, true);
-//         tianFangDa("T:/tfd/石首市人民医院/", false, false, true);
-//         tianFangDa("T:/tfd/襄阳东风人民医院/", false, false, true);
+        // tianFangDa("T:/tfd/湖北中山医院/", false, false, true);
+        // tianFangDa("T:/tfd/解放军161医院/", false, false, true);
+        // tianFangDa("T:/tfd/荆门市第二人民医院/", false, false, true);
+        // tianFangDa("T:/tfd/荆州市第一人民医院/", false, false, true);
+        // tianFangDa("T:/tfd/荆州市中心医院/", false, false, true);
+        // tianFangDa("T:/tfd/荆州市中医医院/", false, false, true);
+        // tianFangDa("T:/tfd/荆州松滋市人民医院/", false, false, true);
+        // tianFangDa("T:/tfd/石首市人民医院/", false, false, true);
+        // tianFangDa("T:/tfd/襄阳东风人民医院/", false, false, true);
         // 获取分类数据
         // tianFangDa(sourcePath, true, false);
-
+        
         /** tianFangDa去除姓名及单位 **/
         // tianFangDaDesensitization();
-
+        
         /** 161医院流水号和文件号对应 **/
         // liuShuiHao_161YiYuan("");
-
+        
         /** 161医院_超声 **/
         // chaoSheng_161YiYuan("D:/Desktop/161医院_超声.xlsx");
-
+        
         /** Test Code **/
         // String sourceStr = "双颈动脉硬化多发斑块形成、左侧颈动脉局部狭窄";
         // String tmpStr;
@@ -135,7 +135,7 @@ public class TestCode {
         // tmpStr = sourceStr.substring(a);
         // }
         // LOGGER.info(a + " " + b + " " + c);
-
+        
         // 2016年11月5日 整理161测试数据
         // String folderPath = "D:/Desktop/zhengli_1109/";
         // zhengLi_1105(folderPath);
@@ -144,9 +144,9 @@ public class TestCode {
         // zhengli_1116();
         // jiaZhuangXianChaoShengJiSuan();
         // chaoshenghebing_1118("D:/Desktop/超声已审共25个文件");
-
+        
         // testMethod();
-
+        
         // List<String> list = new ArrayList<String>();
         // list.add("000");
         // list.add("111");
@@ -156,14 +156,15 @@ public class TestCode {
         // for (String string : list) {
         // LOGGER.info(string);
         // }
-
+        
         // threadPoolTest();
         // ConnectionPool connectionPool = new ConnectionPool();
-
+        
         /** 甲状腺结节评估 **/
-        // EnterClass.batchAssessmentEnter(desktopPath + "天津医院2017.1.1-7.31.xlsx", 0, null, 6);
+        // EnterClass.batchAssessmentEnter(desktopPath + "天津医院2017.1.1-7.31.xlsx", 0,
+        // null, 6);
         // EnterClass.singleAssessmentEnter(TextReader.getReader().getText());
-
+        
         // NoduleData noduleData = new NoduleData();
         // noduleData.setNoduleStructure("实性");
         // noduleData.setNoduleSecondStructure("");
@@ -180,44 +181,50 @@ public class TestCode {
         // }
         
         /* 空军总医院数据提取 */
-//        task20171013("T:/kongzong/");
-
+        // task20171013("T:/kongzong/");
+        
         // updateTiradsResult();
-
+        
         // continuousData();
-
-
-//        String[] sids = { "gbnew", "gbold", "gjnew", "gjold" };
-//        for (final String sid : sids) {
-//            Runnable runnable = new Runnable() {
-//                public void run() {
-//                    Set<String> targets = new HashSet<String>();
-////                    targets.add("pe_dept_result_dict");
-////                    targets.add("pe_master_index");
-//                    targets.add("pe_dept_result_items");
-//                    if (sid.endsWith("old")) {
-//                        targets.add("pe_assem_vs_exam");
-//                        targets.add("pe_dept_dict");
-//                        targets.add("pe_item_dict");
-//                    }
-//                    Oracle2Mysql o2m = new Oracle2Mysql();
-//                    o2m.set(targets, sid, 100000);
-//                    o2m.start();
-//                }
-//            };
-//            Thread thread = new Thread(runnable);
-//            thread.start();
-//        }
+        
+        // String[] sids = { "gbnew", "gbold", "gjnew", "gjold" };
+        // for (final String sid : sids) {
+        // Runnable runnable = new Runnable() {
+        // public void run() {
+        // Set<String> targets = new HashSet<String>();
+        //// targets.add("pe_dept_result_dict");
+        //// targets.add("pe_master_index");
+        // targets.add("pe_dept_result_items");
+        // if (sid.endsWith("old")) {
+        // targets.add("pe_assem_vs_exam");
+        // targets.add("pe_dept_dict");
+        // targets.add("pe_item_dict");
+        // }
+        // Oracle2Mysql o2m = new Oracle2Mysql();
+        // o2m.set(targets, sid, 100000);
+        // o2m.start();
+        // }
+        // };
+        // Thread thread = new Thread(runnable);
+        // thread.start();
+        // }
+        String host = "";
+        String port = "";
+        String username = "";
+        String password = "";
+        String savePath = "";
         Set<String> targets = new HashSet<String>();
-        Oracle2Mysql o2m = new Oracle2Mysql();
-        o2m.set(targets, "orcl", 100000);
+        targets.add("pe_master_index");
+        Oracle2Mysql o2m = new Oracle2Mysql(host, port, username, password);
+        o2m.set(targets, "orcl", 100000, savePath);
         o2m.start();
-
+        
         LOGGER.info(getMemoryInfo());
     }
     
     /**
      * 空军总医院数据提取
+     * 
      * @author Reticence (liuyang_blue@qq.com)
      */
     public static void task20171013(String sourcePath) {
@@ -252,7 +259,7 @@ public class TestCode {
                 }
                 for (int rowNum = 1; rowNum <= sr.getLastRowNum(); rowNum++) {
                     rr = sr.getRow(rowNum);
-                    if(rr == null){
+                    if (rr == null) {
                         continue;
                     }
                     rw = sw.createRow(sumRowNum);
@@ -277,7 +284,7 @@ public class TestCode {
                             }
                             PoiUtil.setCellValue(rw, sumColNum, value);
                         }
-                    } 
+                    }
                 }
                 wbr.close();
             } catch (IOException e) {
@@ -320,7 +327,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void continuousData() {
         String path = "T:/gx_人数判断_1.xlsx";
         try {
@@ -334,13 +341,14 @@ public class TestCode {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
     }
-
+    
     public static void updateTiradsResult() {
         ConnectionPool connectionPool = new ConnectionPool(5);
         StringBuffer sql = new StringBuffer();
-        sql.append("SELECT A.orgID, A.PE_ID, B.checkdate, A.noduleNum, A.structure, A.second_structure, A.hyperecho, A.edge, A.ratio, A.calcification");
+        sql.append(
+                "SELECT A.orgID, A.PE_ID, B.checkdate, A.noduleNum, A.structure, A.second_structure, A.hyperecho, A.edge, A.ratio, A.calcification");
         sql.append(" FROM ultrasonography.data_info A");
         sql.append(" LEFT JOIN ultrasonography.base_info B ON A.orgID = B.orgID AND A.PE_ID = B.PE_ID");
         List<String[]> list = connectionPool.execQuery(sql.toString());
@@ -356,24 +364,30 @@ public class TestCode {
             Map<String, String> map = EnterClass.singleAssessmentEnter(noduleData);
             LOGGER.info(map.get(EnterClass.TIRADS_RESULT) + "\t" + JSON.toJSONString(noduleData));
             StringBuffer updateSql = new StringBuffer();
-//            String checkdate = StringUtils.isBlank(arr[2]) ? "IS NULL" : "= '" + arr[2] + "'";
-//            updateSql.append("UPDATE thyroid_nodulesdb.sys_weixin_assessment_result SET tiradsResult = '" + map.get(EnterClass.TIRADS_RESULT) + "'");
-//            updateSql.append(" WHERE orgID = " + arr[0] + " AND checkNumber = '" + arr[1] + "' AND checkdate " + checkdate + " AND noduleNum = " + arr[3]);
-            updateSql.append("UPDATE thyroid_nodulesdb.sys_weixin_assessment_result SET tiradsResult = '" + map.get(EnterClass.TIRADS_RESULT) + "'");
-            updateSql.append(" WHERE orgID = " + arr[0] + " AND checkNumber = '" + arr[1] + "' AND noduleNum = " + arr[3]);
+            // String checkdate = StringUtils.isBlank(arr[2]) ? "IS NULL" : "= '" + arr[2] +
+            // "'";
+            // updateSql.append("UPDATE thyroid_nodulesdb.sys_weixin_assessment_result SET
+            // tiradsResult = '" + map.get(EnterClass.TIRADS_RESULT) + "'");
+            // updateSql.append(" WHERE orgID = " + arr[0] + " AND checkNumber = '" + arr[1]
+            // + "' AND checkdate " + checkdate + " AND noduleNum = " + arr[3]);
+            updateSql.append("UPDATE thyroid_nodulesdb.sys_weixin_assessment_result SET tiradsResult = '"
+                    + map.get(EnterClass.TIRADS_RESULT) + "'");
+            updateSql.append(
+                    " WHERE orgID = " + arr[0] + " AND checkNumber = '" + arr[1] + "' AND noduleNum = " + arr[3]);
             boolean execResult = false;
             // execResult = connectionPool.execUpdate(updateSql.toString());
             LOGGER.info(execResult + "\t" + updateSql.toString());
         }
         connectionPool.colse();
     }
-
+    
     public static void threadPoolTest() {
         ConnectionPool connectionPool = new ConnectionPool();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         List<Future<String>> taskList = new ArrayList<Future<String>>();
         for (int i = 0; i < 100; i++) {
-            ThreadPoolTask task = new ThreadPoolTask(connectionPool, "SELECT " + i + ", index_code, index_name FROM checkup_library.meridian_index_list");
+            ThreadPoolTask task = new ThreadPoolTask(connectionPool,
+                    "SELECT " + i + ", index_code, index_name FROM checkup_library.meridian_index_list");
             Future<String> future = executorService.submit(task);
             taskList.add(future);
         }
@@ -390,7 +404,7 @@ public class TestCode {
         executorService.shutdown();
         LOGGER.info(allExecuteResult);
     }
-
+    
     public static String plusDay(String appointedDay, int num) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date currdate = format.parse(appointedDay);
@@ -400,12 +414,12 @@ public class TestCode {
         currdate = ca.getTime();
         return format.format(currdate);
     }
-
+    
     public static void testMethod() {
         Pattern pattern1 = Pattern.compile("[0-9]+(\\.[0-9]+)?×[0-9]+(\\.[0-9]+)?×[0-9]+(\\.[0-9]+)?cm");
         Pattern pattern2 = Pattern.compile("[0-9]+(\\.[0-9]+)?×[0-9]+(\\.[0-9]+)?cm");
         Pattern pattern3 = Pattern.compile("[0-9]+(\\.[0-9]+)?cm");
-
+        
         String inPath = "D:/Desktop/input.txt";
         String outPath = "D:/Desktop/output.txt";
         try {
@@ -415,14 +429,14 @@ public class TestCode {
             while ((line = br.readLine()) != null) {
                 line = line.replace("x", "×").replace("X", "×").replace("*", "×");
                 List<String> oldStrings;
-
+                
                 oldStrings = getMatcherList(pattern1, line);
                 line = cm2mm(line, oldStrings);
                 oldStrings = getMatcherList(pattern2, line);
                 line = cm2mm(line, oldStrings);
                 oldStrings = getMatcherList(pattern3, line);
                 line = cm2mm(line, oldStrings);
-
+                
                 bw.write(line);
                 bw.newLine();
             }
@@ -432,7 +446,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     private static String cm2mm(String string, List<String> oldStrings) {
         Pattern patternNum = Pattern.compile("[0-9]+(\\.[0-9]+)?");
         for (String oldString : oldStrings) {
@@ -452,7 +466,7 @@ public class TestCode {
         }
         return string;
     }
-
+    
     public static int strFindCount(String str, String findStr) {
         int count = 0;
         int index;
@@ -462,7 +476,7 @@ public class TestCode {
         }
         return count;
     }
-
+    
     private static List<String> getMatcherList(Pattern pattern, String oldString) {
         List<String> oldStrings = new ArrayList<String>();
         Matcher matcher = pattern.matcher(oldString);
@@ -471,7 +485,7 @@ public class TestCode {
         }
         return oldStrings;
     }
-
+    
     public static void chaoshenghebing_1118(String folderPath) {
         String outFilePath = "D:/Desktop/超声25_result.xlsx";
         try {
@@ -479,14 +493,14 @@ public class TestCode {
             Sheet sheetR = workbookR.createSheet();
             Row rowR;
             int writeRownum = 0;
-
+            
             File root = new File(folderPath);
             File[] files = root.listFiles();
             for (File file : files) {
                 Workbook workbook = new XSSFWorkbook(file);
                 Sheet sheet = workbook.getSheetAt(0);
                 Row row;
-
+                
                 int lastRowNum = sheet.getLastRowNum();
                 for (int rownum = 0; rownum <= lastRowNum; rownum++) {
                     row = sheet.getRow(rownum);
@@ -494,14 +508,15 @@ public class TestCode {
                         continue;
                     }
                     rowR = sheetR.createRow(writeRownum++);
-                    rowR.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(FileOperationUtil.getFileNameNoEx(file.getName()));
+                    rowR.createCell(0, Cell.CELL_TYPE_STRING)
+                            .setCellValue(FileOperationUtil.getFileNameNoEx(file.getName()));
                     rowR.createCell(1, Cell.CELL_TYPE_STRING).setCellValue(PoiUtil.getValue(row.getCell(0)));
                     rowR.createCell(2, Cell.CELL_TYPE_STRING).setCellValue(PoiUtil.getValue(row.getCell(1)));
                     rowR.createCell(3, Cell.CELL_TYPE_STRING).setCellValue(PoiUtil.getValue(row.getCell(2)));
                 }
                 workbook.close();
             }
-
+            
             FileOutputStream outputStream = new FileOutputStream(outFilePath);
             workbookR.write(outputStream);
             workbookR.close();
@@ -513,7 +528,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void jiaZhuangXianChaoShengJiSuan() {
         String inputFile = "D:/Desktop/jiazhuangxian.txt";
         String outputFile = "D:/Desktop/jiazhuangxian_count.csv";
@@ -546,7 +561,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void zhengli_1116() {
         String inputFile = "D:/Desktop/湖北中山医院-超声原始数据.xlsx";
         String outputFile = "D:/Desktop/湖北中山医院-超声原始数据-out.xlsx";
@@ -557,7 +572,7 @@ public class TestCode {
             Row row;
             String key;
             String value;
-
+            
             sheet = workbook.getSheet("Sheet2");
             for (int rownum = 0; rownum <= sheet.getLastRowNum(); rownum++) {
                 row = sheet.getRow(rownum);
@@ -567,7 +582,7 @@ public class TestCode {
                 value = PoiUtil.getValue(row.getCell(1));
                 formatMap.put(key, value);
             }
-
+            
             Workbook outWorkbook = new SXSSFWorkbook();
             Sheet outSheet = outWorkbook.createSheet("outSheet");
             Row outRow;
@@ -585,7 +600,7 @@ public class TestCode {
                         key = "";
                     }
                     outRow.createCell(outColnum++, Cell.CELL_TYPE_STRING).setCellValue(key);
-
+                    
                     value = formatMap.get(key);
                     if (StringUtils.isBlank(value) && rownum > 1 && StringUtils.isNotBlank(key)) {
                         value = "None";
@@ -594,7 +609,7 @@ public class TestCode {
                 }
             }
             workbook.close();
-
+            
             FileOutputStream outputStream = new FileOutputStream(outputFile);
             outWorkbook.write(outputStream);
             outWorkbook.close();
@@ -603,7 +618,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void deleteQuanJiao(String inPath) {
         String outPath = inPath + "_new.txt";
         try {
@@ -621,7 +636,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void zhengli_1109(String folderPath) {
         String outPath = folderPath + "outfile.txt";
         String sourceFolder = folderPath + "input/";
@@ -637,7 +652,7 @@ public class TestCode {
                 name2CodeMap.put(strings[0], strings[1]);
             }
             reader.close();
-
+            
             File root;
             File[] files;
             root = new File(notFindFolder);
@@ -645,7 +660,7 @@ public class TestCode {
             for (File file : files) {
                 file.delete();
             }
-
+            
             BufferedWriter writer = new BufferedWriter(new FileWriter(outPath, false));
             root = new File(sourceFolder);
             files = root.listFiles();
@@ -672,7 +687,7 @@ public class TestCode {
                             break;
                         }
                     } while (maxSheetNum > 0);
-
+                    
                     if (runFlag) {
                         for (int rownum = 1; rownum <= sheet.getLastRowNum(); rownum++) {
                             row = sheet.getRow(rownum);
@@ -686,12 +701,12 @@ public class TestCode {
                             if (null == cell_0 || null == cell_1 || (null == cell_2 && null == cell_3)) {
                                 continue;
                             }
-
+                            
                             String codeName = PoiUtil.getValue(cell_0);
                             String codeValue = PoiUtil.getValue(cell_1);
                             String value;
                             String tmp;
-
+                            
                             if (null == cell_2) {
                                 codeName = StringUtils.isNotBlank(tmp = PoiUtil.getValue(cell_3)) ? tmp : codeName;
                             }
@@ -702,12 +717,14 @@ public class TestCode {
                                 codeValue = StringUtils.isNotBlank(tmp = PoiUtil.getValue(cell_2)) ? tmp : codeValue;
                             }
                             try {
-                                value = codeName + "\t" + indexCode + "-" + "0000".substring(codeValue.length()) + codeValue;
+                                value = codeName + "\t" + indexCode + "-" + "0000".substring(codeValue.length())
+                                        + codeValue;
                                 // LOGGER.info(value);
                                 writer.write(value);
                                 writer.newLine();
                             } catch (StringIndexOutOfBoundsException e) {
-                                LOGGER.info("\tcodeName=" + codeName + "\tindexCode=" + indexCode + "\tcodeValue" + codeValue);
+                                LOGGER.info("\tcodeName=" + codeName + "\tindexCode=" + indexCode + "\tcodeValue"
+                                        + codeValue);
                             }
                         }
                     }
@@ -724,7 +741,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void zhengli_1106(String folderPath) {
         String name2CodeFilePath = folderPath + "index_name_to_code.txt";
         String sourceFolder = folderPath + "input/";
@@ -739,12 +756,12 @@ public class TestCode {
                 name2CodeMap.put(strings[0], strings[1]);
             }
             reader.close();
-
+            
             BufferedWriter writer = new BufferedWriter(new FileWriter(codeClassifyFilePath, false));
-
+            
             File root = new File(sourceFolder);
             File[] files = root.listFiles();
-
+            
             for (File file : files) {
                 LOGGER.info(file.getPath());
                 Workbook workbook = new XSSFWorkbook(file);
@@ -766,7 +783,7 @@ public class TestCode {
                             break;
                         }
                     } while (maxSheetNum > 0);
-
+                    
                     if (runFlag) {
                         for (int rownum = 1; rownum <= sheet.getLastRowNum(); rownum++) {
                             row = sheet.getRow(rownum);
@@ -779,7 +796,8 @@ public class TestCode {
                             }
                             String code = PoiUtil.getValue(cell);
                             try {
-                                value = PoiUtil.getValue(row.getCell(0)) + "|$" + indexCode + "-" + "0000".substring(code.length()) + code + "^$^";
+                                value = PoiUtil.getValue(row.getCell(0)) + "|$" + indexCode + "-"
+                                        + "0000".substring(code.length()) + code + "^$^";
                                 writer.write(value);
                             } catch (StringIndexOutOfBoundsException e) {
                                 LOGGER.info("indexCode=" + indexCode + "\tcode=" + code);
@@ -798,7 +816,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void zhengLi_1105(String folderPath) {
         String name2CodeFilePath = folderPath + "index_name_to_code.txt";
         String codeContentFilePath = folderPath + "code_content.txt";
@@ -819,19 +837,19 @@ public class TestCode {
             }
             reader.close();
             // codeWriter.close();
-
+            
             BufferedWriter writer = new BufferedWriter(new FileWriter(codeContentFilePath, false));
             Set<String> codeContentSet = new HashSet<String>();
-
+            
             Workbook workbookR = new XSSFWorkbook();
             Sheet sheetR = workbookR.createSheet();
             Row firstRowR = sheetR.createRow(0);
             Row rowR;
             boolean firstFileFlag = true;
-
+            
             File root = new File(sourceFolder);
             File[] files = root.listFiles();
-
+            
             int maxRowNum = 0;
             int column = 1;
             String indexName;
@@ -884,7 +902,7 @@ public class TestCode {
                             } catch (StringIndexOutOfBoundsException e) {
                                 LOGGER.info("indexCode=" + indexCode + "\tcode=" + code);
                             }
-
+                            
                         }
                         codeConten = codeConten.substring(0, codeConten.length() - 1);
                         if (!codeContentSet.contains(codeConten)) {
@@ -901,7 +919,7 @@ public class TestCode {
                 workbook.close();
             }
             writer.close();
-
+            
             FileOutputStream outputStream = new FileOutputStream(outFilePath);
             workbookR.write(outputStream);
             workbookR.close();
@@ -914,25 +932,25 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void chaoSheng_161YiYuan(String sourcePath) {
         String handledPath = sourcePath.substring(0, sourcePath.length() - 5) + "_已处理.xlsx";
-
+        
         File file = new File(handledPath);
         if (file.exists()) {
             file.delete();
         }
-
+        
         String describe = "(声像图)?(未见异常|未见明显异常)";
         try {
             LOGGER.info("start");
             Workbook workbook_r = new XSSFWorkbook(new FileInputStream(sourcePath));
             Sheet sheet_r = workbook_r.getSheetAt(0);
-
+            
             Workbook workbook_w = new XSSFWorkbook();
             Sheet sheet_w = workbook_w.createSheet("handled data");
             Row row_w;
-
+            
             String sourceValue;
             String handledValue;
             String handledValuesTmp;
@@ -946,7 +964,7 @@ public class TestCode {
             String punctuation;
             TreeSet<String> handledResult = new TreeSet<String>();
             TreeSet<String> tmpResult = new TreeSet<String>();
-
+            
             ArrayList<String> titalList = new ArrayList<String>();
             HashMap<String, Integer> titalMap = new HashMap<String, Integer>();
             titalList.add("肝");
@@ -978,7 +996,7 @@ public class TestCode {
                 titalMap.put(str, ++maxColNUm);
                 row_w.createCell(maxColNUm, Cell.CELL_TYPE_STRING).setCellValue(str);
             }
-
+            
             for (int i = 1; i < sheet_r.getLastRowNum(); i++) {
                 punctuation = ".";
                 row_w = sheet_w.createRow(i);
@@ -986,17 +1004,19 @@ public class TestCode {
                 sourceValue = sheet_r.getRow(i).getCell(0).getStringCellValue();
                 // LOGGER.info(sourceValue);
                 row_w.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(sourceValue);
-
-                handledValues = sourceValue.replaceAll("\r\n|\r|\n", "#@#").replaceAll("\t", "#@#").replaceAll("　", "#@#").replaceAll(" ", "#@#")
+                
+                handledValues = sourceValue.replaceAll("\r\n|\r|\n", "#@#").replaceAll("\t", "#@#")
+                        .replaceAll("　", "#@#").replaceAll(" ", "#@#")
                         // .replaceAll("，", "#@#")
-                        .replaceAll("甲状腺：", "#@#").replaceAll("腹部：", "#@#").replaceAll("心脏：", "#@#").replaceAll("妇科：", "#@#").replaceAll("乳腺：", "#@#").replaceAll("颈部：", "#@#").split("#@#");
+                        .replaceAll("甲状腺：", "#@#").replaceAll("腹部：", "#@#").replaceAll("心脏：", "#@#")
+                        .replaceAll("妇科：", "#@#").replaceAll("乳腺：", "#@#").replaceAll("颈部：", "#@#").split("#@#");
                 for (String value : handledValues) {
                     value = value.trim();
                     if ("".equals(value)) {
                         continue;
                     }
                     handledValuesTmp = matchingStr(value, describe);
-
+                    
                     while (".".equals(punctuation) || "、".equals(punctuation)) {
                         splitNum = 2;
                         if (value.contains("1" + punctuation)) {
@@ -1018,7 +1038,7 @@ public class TestCode {
                         }
                         punctuation = "、";
                     }
-
+                    
                     if (!"".equals(handledValuesTmp)) {
                         if (value.contains("肝")) {
                             handledResult.add("肝" + handledValuesTmp);
@@ -1144,13 +1164,13 @@ public class TestCode {
                     }
                 }
             }
-
+            
             for (String string : tmpResult) {
                 LOGGER.info(string);
             }
-
+            
             workbook_r.close();
-
+            
             FileOutputStream outputStream = new FileOutputStream(handledPath, true);
             workbook_w.write(outputStream);
             workbook_w.close();
@@ -1162,7 +1182,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     private static String matchingStr(String str, String patternStr) {
         String returnStr = "";
         Pattern pattern = Pattern.compile(patternStr);
@@ -1170,32 +1190,32 @@ public class TestCode {
         while (matcher.find()) {
             returnStr += matcher.group();
         }
-
+        
         return returnStr;
     }
-
+    
     public static void liuShuiHao_161YiYuan(String sourcePath) {
         try {
             String excelPath = sourcePath.substring(0, sourcePath.length() - 1) + "_liushuihao.xlsx";
-
+            
             File file = new File(excelPath);
             if (file.exists()) {
                 file.delete();
             }
-
+            
             Workbook wb = new XSSFWorkbook();
             Sheet sheet = wb.createSheet("export data");
             Row titalRow = sheet.createRow(0);
             Row row = null;
-
+            
             titalRow.createCell(0).setCellValue("登记流水号");
             titalRow.createCell(1).setCellValue("文件号");
-
+            
             File root = new File(sourcePath);
             File[] files = root.listFiles();
             Workbook wbr;
             Sheet sheetr;
-
+            
             String liuShuiHao;
             String wenJianHao;
             for (int i = 0; i < files.length; i++) {
@@ -1205,28 +1225,28 @@ public class TestCode {
                 LOGGER.info(files[i].getPath());
                 wenJianHao = files[i].getName();
                 wenJianHao = wenJianHao.substring(0, wenJianHao.indexOf("-"));
-
+                
                 wbr = new HSSFWorkbook(new FileInputStream(files[i]));
                 sheetr = wbr.getSheetAt(0);
                 liuShuiHao = sheetr.getRow(1).getCell(0).getStringCellValue().replace("登记流水号：", "");
                 liuShuiHao = liuShuiHao.substring(0, liuShuiHao.indexOf("性别：")).trim();
-
+                
                 row = sheet.createRow(i + 1);
                 row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(liuShuiHao);
                 row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue(wenJianHao);
             }
-
+            
             FileOutputStream outputStream = new FileOutputStream(excelPath, true);
             wb.write(outputStream);
             wb.close();
             outputStream.flush();
             outputStream.close();
-
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    
     public static void tianFangDaDesensitization() {
         // String sourcePath =
         // TestCode.class.getResource("").getPath().substring(1);
@@ -1236,7 +1256,7 @@ public class TestCode {
         File root = new File(sourcePath);
         File[] files = root.listFiles();
         String filePath;
-
+        
         Workbook workbook;
         Sheet sheet;
         Cell cell;
@@ -1249,7 +1269,7 @@ public class TestCode {
             if (!filePath.endsWith(".xls")) {
                 continue;
             }
-
+            
             LOGGER.info(filePath);
             try {
                 workbook = new HSSFWorkbook(new FileInputStream(filePath));
@@ -1260,7 +1280,7 @@ public class TestCode {
                 value = tmp.substring(0, tmp.indexOf("姓名：")) + tmp.substring(tmp.indexOf("性别："));
                 LOGGER.info(value);
                 cell.setCellValue(value);
-
+                
                 cell = sheet.getRow(2).getCell(0);
                 value = cell.getStringCellValue();
                 tmp = value;
@@ -1269,33 +1289,33 @@ public class TestCode {
                 }
                 LOGGER.info(value);
                 cell.setCellValue(value);
-
+                
                 FileOutputStream outputStream = new FileOutputStream(filePath);
                 workbook.write(outputStream);
                 workbook.close();
                 outputStream.flush();
                 outputStream.close();
-
+                
                 oldName = filePath;
                 newName = oldName.substring(0, oldName.indexOf("_") + 1) + i + ".xls";
-
+                
                 File oldFile = new File(oldName);
                 File newFile = new File(newName);
                 oldFile.renameTo(newFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            
         }
     }
-
+    
     public static void tianFangDa(String sourcePath, boolean classifyFlag, boolean indexOnly, boolean withRange) {
         try {
             String excelPath = sourcePath;
             if (excelPath.endsWith("/")) {
                 excelPath = sourcePath.substring(0, sourcePath.length() - 1);
             }
-
+            
             if (classifyFlag) {
                 excelPath += "_classify.xlsx";
             } else {
@@ -1304,18 +1324,18 @@ public class TestCode {
             if (indexOnly) {
                 excelPath = sourcePath.substring(0, sourcePath.length() - 1) + "_index.xlsx";
             }
-
+            
             try {
                 new File(excelPath).delete();
             } catch (Exception e1) {
             }
-
+            
             HashMap<String, Integer> allTitle = new HashMap<String, Integer>();
             Workbook wb = new XSSFWorkbook();
             Sheet sheet = wb.createSheet("export data");
             Row titalRow = sheet.createRow(0);
             Row row = null;
-
+            
             if (indexOnly) {
                 titalRow.createCell(0).setCellValue("文件号");
                 titalRow.createCell(1).setCellValue("部门科室");
@@ -1333,12 +1353,12 @@ public class TestCode {
                 titalRow.createCell(7).setCellValue("收缩压");
                 titalRow.createCell(8).setCellValue("舒张压");
             }
-
+            
             List<File> files = FileOperationUtil.fileRecurses(sourcePath);
             Workbook wbr;
             Sheet sheetr;
             Row rowr;
-
+            
             int titalColNum = 9;
             int rowNum = 1;
             String department = "";
@@ -1360,10 +1380,10 @@ public class TestCode {
             String[] infos;
             boolean dataFlag;
             boolean rowCreated;
-
+            
             String indexFullName = "";
             HashSet<String> indexSet = new HashSet<String>();
-
+            
             for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);
                 dataFlag = false;
@@ -1395,17 +1415,18 @@ public class TestCode {
                     } catch (NullPointerException e) {
                         continue;
                     }
-
+                    
                     if (indexOnly) {
                         if (rowNumR < 3) {
                             continue;
                         }
-                        if (values[0] != null && !values[0].contains("登记流水号") && !values[0].contains("单位名称") && "".equals(values[1]) && "".equals(values[2]) && "".equals(values[3])) {
+                        if (values[0] != null && !values[0].contains("登记流水号") && !values[0].contains("单位名称")
+                                && "".equals(values[1]) && "".equals(values[2]) && "".equals(values[3])) {
                             department = values[0];
                         } else if (values[1].contains("检查日期")) {
                             project = values[0];
                         }
-
+                        
                         if ("项目名称".equals(values[0])) {
                             dataFlag = true;
                             continue;
@@ -1414,7 +1435,7 @@ public class TestCode {
                             // department = "";
                             // project = "";
                         }
-
+                        
                         if (dataFlag) {
                             index = values[0];
                             indexFullName = department + project + index;
@@ -1423,10 +1444,10 @@ public class TestCode {
                                 continue;
                             }
                             indexSet.add(indexFullName);
-
+                            
                             row = sheet.createRow(rowNum);
                             rowNum++;
-
+                            
                             row.createCell(0).setCellValue(file.getName());
                             row.createCell(1).setCellValue(department);
                             row.createCell(2).setCellValue(project);
@@ -1437,16 +1458,17 @@ public class TestCode {
                                 sheet = wb.createSheet("export data2");
                             }
                         }
-
+                        
                         continue;
                     }
-
+                    
                     if (values[1].contains("检查日期")) {
                         project = values[0];
                     }
-
+                    
                     if (values[0].contains("登记流水号")) {
-                        infos = values[0].replaceAll(" ", "").replace("登记流水号", "").replace("姓名", "").replace("性别", "").replace("年龄", "").split("：");
+                        infos = values[0].replaceAll(" ", "").replace("登记流水号", "").replace("姓名", "").replace("性别", "")
+                                .replace("年龄", "").split("：");
                         row = sheet.createRow(rowNum);
                         rowNum++;
                         rowCreated = true;
@@ -1463,7 +1485,8 @@ public class TestCode {
                         rowNum++;
                     }
                     if (values[0].contains("单位名称")) {
-                        infos = values[0].replaceAll(" ", "").replace("单位名称", "").replace("体检日期", "").replace("/", "-").split("：");
+                        infos = values[0].replaceAll(" ", "").replace("单位名称", "").replace("体检日期", "").replace("/", "-")
+                                .split("：");
                         try {
                             row.createCell(5).setCellValue(infos[1].trim());
                             row.createCell(6).setCellValue(infos[2].trim());
@@ -1474,11 +1497,11 @@ public class TestCode {
                         continue;
                     } else if ("小  结：".equals(values[0])) {
                         dataFlag = false;
-
+                        
                         key = project + "&" + values[0];
                         value = values[1];
                         project = "";
-
+                        
                         if (!allTitle.containsKey(key) && !"".equals(value)) {
                             allTitle.put(key, titalColNum);
                             titalRow.createCell(titalColNum).setCellValue(key);
@@ -1486,10 +1509,10 @@ public class TestCode {
                         } else if ("".equals(value)) {
                             continue;
                         }
-
+                        
                         row.createCell(allTitle.get(key)).setCellValue(value);
                     }
-
+                    
                     if (dataFlag && row != null) {
                         key = project + "&" + values[0];
                         key2 = key + "-提示";
@@ -1529,10 +1552,11 @@ public class TestCode {
                         } else if ("".equals(value)) {
                             continue;
                         }
-
+                        
                         try {
                             if (classifyFlag) {
-                                if (!"-".equals(range) && (range.contains("--") || range.contains("-") || range.contains("～～") || range.contains("～"))) {
+                                if (!"-".equals(range) && (range.contains("--") || range.contains("-")
+                                        || range.contains("～～") || range.contains("～"))) {
                                     range = range.replace("--", "-").replace("～～", "-").replace("～", "-");
                                     ranges = range.split("-");
                                     rangeMax = Float.parseFloat(ranges[0].trim());
@@ -1543,7 +1567,7 @@ public class TestCode {
                                         rangeMax = rangeMin;
                                         rangeMin = tmp;
                                     }
-    
+                                    
                                     if (rangeMin == 0 && valueF < rangeMax) {
                                         value = "正常";
                                     } else if (rangeMin == 0 && valueF > rangeMax) {
@@ -1569,13 +1593,13 @@ public class TestCode {
                         } catch (NullPointerException e) {
                         } catch (ArrayIndexOutOfBoundsException e) {
                         }
-
+                        
                         row.createCell(allTitle.get(key)).setCellValue(value + expand);
                         row.createCell(allTitle.get(key2)).setCellValue(hint);
                     }
                 }
             }
-
+            
             LOGGER.info("Title size: " + allTitle.size() + "  Save to file: " + excelPath);
             FileOutputStream outputStream = new FileOutputStream(excelPath);
             wb.write(outputStream);
@@ -1586,7 +1610,7 @@ public class TestCode {
             e.printStackTrace();
         }
     }
-
+    
     public static void overviewAnalysis(String inPath, String outPath) {
         HashMap<String, Integer> resultMap = new HashMap<String, Integer>();
         File file = new File(inPath);
@@ -1597,21 +1621,27 @@ public class TestCode {
                 int value;
                 String[] s1, s2;
                 while ((str = br.readLine()) != null) {
-                    s1 = str.replaceAll("：         ", ";").replaceAll("：        ", ";").replaceAll("：       ", ";").replaceAll("：      ", ";").replaceAll("：     ", ";").replaceAll("：    ", ";").replaceAll("：   ", ";").replaceAll("：  ", ";").replaceAll("： ", ";").replaceAll("\\[", "")
-                            .replaceAll("\\]", ";").replaceAll("\\>", "").replaceAll("\\<", "").replaceAll("=", ".").replaceAll("\\(", ".").replaceAll("\\)", ".").replaceAll("。", ".").split("、");
+                    s1 = str.replaceAll("：         ", ";").replaceAll("：        ", ";").replaceAll("：       ", ";")
+                            .replaceAll("：      ", ";").replaceAll("：     ", ";").replaceAll("：    ", ";")
+                            .replaceAll("：   ", ";").replaceAll("：  ", ";").replaceAll("： ", ";").replaceAll("\\[", "")
+                            .replaceAll("\\]", ";").replaceAll("\\>", "").replaceAll("\\<", "").replaceAll("=", ".")
+                            .replaceAll("\\(", ".").replaceAll("\\)", ".").replaceAll("。", ".").split("、");
                     for (String cs1 : s1) {
                         s2 = cs1.replaceAll(" ", "").trim().split(";");
                         for (String cs2 : s2) {
-                            if (cs2.contains("视力") || cs2.contains("C-UBI") || cs2.contains("STⅡⅢavFv") || cs2.contains("TV") || cs2.contains("Tv") || cs2.contains("avL") || cs2.contains("avl")) {
+                            if (cs2.contains("视力") || cs2.contains("C-UBI") || cs2.contains("STⅡⅢavFv")
+                                    || cs2.contains("TV") || cs2.contains("Tv") || cs2.contains("avL")
+                                    || cs2.contains("avl")) {
                                 key = cs2.trim();
                             } else {
                                 key = cs2.replaceAll("\\d+", "").replaceAll("\\.", "").trim();
                             }
-
+                            
                             // if (":A提示感染".equals(key))
                             // LOGGER.info(str);
-
-                            if (resultMap.keySet().contains(key) && !"+".equals(key) && !":".equals(key) && !"~".equals(key)) {
+                            
+                            if (resultMap.keySet().contains(key) && !"+".equals(key) && !":".equals(key)
+                                    && !"~".equals(key)) {
                                 value = resultMap.get(key);
                                 value++;
                                 resultMap.put(key, value);
@@ -1628,7 +1658,7 @@ public class TestCode {
                 e.printStackTrace();
             }
         }
-
+        
         try {
             BufferedWriter output = new BufferedWriter(new FileWriter(outPath, false));
             for (String key : resultMap.keySet()) {
@@ -1648,11 +1678,11 @@ public class TestCode {
             
         }
     }
-
+    
     @SuppressWarnings({ "unchecked", "unused" })
     public static void createContents(String path) {
         List<String> contentList = new ArrayList<String>();
-
+        
         int i = 0;
         String[] fileName = new File(path).list();
         for (String name : fileName) {
@@ -1667,7 +1697,7 @@ public class TestCode {
                 } catch (DocumentException e) {
                     e.printStackTrace();
                 }
-
+                
                 Element root = document.getRootElement();
                 for (Element ele1 : (List<Element>) root.elements()) {
                     for (Element ele2 : (List<Element>) ele1.elements()) {
@@ -1713,7 +1743,10 @@ public class TestCode {
                     String[] data_f = data_tmp.split("#:#");
                     if (data_f.length == 2 && !data_f[1].equals("")) {
                         String[] data_s = data_f[1].split("#,#");
-                        if (!(data_s.length == 0) && !data_s[0].matches("^[0-9]+(.[0-9]{1,10})?$") && !data_f[0].equals("综述") && !data_f[0].equals("建议") && !data_f[0].equals("小结情况") && !data_f[0].equals("小结医生") && !data_f[0].equals("小结日期") && !data_f[0].equals("总检医生") && !data_f[0].equals("总检日期")) {
+                        if (!(data_s.length == 0) && !data_s[0].matches("^[0-9]+(.[0-9]{1,10})?$")
+                                && !data_f[0].equals("综述") && !data_f[0].equals("建议") && !data_f[0].equals("小结情况")
+                                && !data_f[0].equals("小结医生") && !data_f[0].equals("小结日期") && !data_f[0].equals("总检医生")
+                                && !data_f[0].equals("总检日期")) {
                             value = data_f[0] + "\t" + data_s[0];
                             // LOGGER.info(value + "\t" + name);
                             if (!findInList(value, contentList)) {
@@ -1735,7 +1768,7 @@ public class TestCode {
         }
         LOGGER.info("finished.");
     }
-
+    
     private static boolean findInList(String inStr, List<String> contentList) {
         for (String tmp : contentList) {
             if (tmp.equals(inStr)) {
@@ -1744,14 +1777,14 @@ public class TestCode {
         }
         return false;
     }
-
+    
     public static String getMemoryInfo() {
         Runtime currRuntime = Runtime.getRuntime();
         int nFreeMemory = (int) (currRuntime.freeMemory() / 1024 / 1024);
         int nTotalMemory = (int) (currRuntime.totalMemory() / 1024 / 1024);
         return "JVM内存信息: FreeMemory = " + nFreeMemory + "M\tTotalMemory = " + nTotalMemory + "M";
     }
-
+    
     public static void copyFile(File oldFile, String newPath) {
         try {
             int byteRead = 0;
@@ -1768,17 +1801,17 @@ public class TestCode {
         } catch (Exception e) {
             LOGGER.info("复制单个文件操作出错");
             e.printStackTrace();
-
+            
         }
-
+        
     }
-
+    
     public static String convert(String fullStr) {
         if (StringUtils.isBlank(fullStr)) {
             return "";
         }
         StringBuilder buf = new StringBuilder(fullStr.length());
-
+        
         char[] c = fullStr.toCharArray();
         for (int i = 0; i < c.length; i++) {
             if (c[i] >= SBC_CHAR_START && c[i] <= SBC_CHAR_END) {

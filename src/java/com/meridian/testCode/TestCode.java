@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,9 +49,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.meridian.module.Oracle2Mysql;
+import com.meridian.module.OracleTransfer;
 import com.meridian.nodules.EnterClass;
 import com.meridian.nodules.model.NoduleData;
+import com.meridian.param.DBParam;
 import com.meridian.utils.ConnectionPool;
 import com.meridian.utils.DateUtil;
 import com.meridian.utils.FileOperationUtil;
@@ -187,37 +189,59 @@ public class TestCode {
 
         // continuousData();
 
-        // String[] sids = { "gbnew", "gbold", "gjnew", "gjold" };
-        // for (final String sid : sids) {
-        // Runnable runnable = new Runnable() {
-        // public void run() {
-        // Set<String> targets = new HashSet<String>();
-        //// targets.add("pe_dept_result_dict");
-        //// targets.add("pe_master_index");
-        // targets.add("pe_dept_result_items");
-        // if (sid.endsWith("old")) {
-        // targets.add("pe_assem_vs_exam");
-        // targets.add("pe_dept_dict");
-        // targets.add("pe_item_dict");
-        // }
-        // Oracle2Mysql o2m = new Oracle2Mysql();
-        // o2m.set(targets, sid, 100000);
-        // o2m.start();
-        // }
-        // };
-        // Thread thread = new Thread(runnable);
-        // thread.start();
-        // }
-        String host = "10.1.1.102";
-        String port = "1521";
-        String username = "phyexam";
-        String password = "meridian";
-        String savePath = desktopPath + "export.sql";
-        Set<String> targets = new HashSet<String>();
-        targets.add("pe_result_dict");
-        Oracle2Mysql o2m = new Oracle2Mysql(host, port, username, password);
-        o2m.set(targets, "gbold", 100000, savePath);
-        o2m.start();
+        final Set<String> targets = new HashSet<String>();
+        String[] sids = { "gbnew", "gbold", "gjnew", "gjold" };
+//        String[] sids = { "gjnew" };
+        List<Thread> threads = new ArrayList<Thread>();
+        for (final String sid : sids) {
+            final DBParam dbp = new DBParam();
+            dbp.setHost("10.1.1.102");
+            dbp.setPort("1521");
+            dbp.setUsername("phyexam");
+            dbp.setPassword("meridian");
+            dbp.setSid(sid);
+            final DBParam tdbp = new DBParam();
+            tdbp.setHost("10.1.1.102");
+            tdbp.setPort("1521");
+            tdbp.setPassword("meridian");
+            tdbp.setSid("orcl");
+            tdbp.setUsername(sid);
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    OracleTransfer ot = new OracleTransfer(dbp);
+                    ot.set(targets, "jfjzyy301_" + sid, 50000);  // 50000
+//                    ot.start2Oracle(tdbp, 20);
+                    ot.start2Mysql(10);
+                }
+            };
+            Thread thread = new Thread(runnable);
+            threads.add(thread);
+            thread.start();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+//        DBParam dbp = new DBParam();
+//        dbp.setHost("10.1.1.102");
+//        dbp.setPort("1521");
+//        dbp.setUsername("phyexam");
+//        dbp.setPassword("meridian");
+//        dbp.setSid("gbold");
+//        DBParam tdbp = new DBParam();
+//        tdbp.setHost("10.1.1.102");
+//        tdbp.setPort("1521");
+//        tdbp.setUsername("gbold");
+//        tdbp.setPassword("meridian");
+//        tdbp.setSid("orcl");
+//        Set<String> targets = new HashSet<String>();
+//        OracleTransfer ot = new OracleTransfer(dbp);
+//        ot.set(targets, "jfjzyy301_" + dbp.getSid(), 10000);
+//        ot.start2Oracle(tdbp);
 
         System.out.println(getMemoryInfo(begin));
     }
@@ -378,7 +402,7 @@ public class TestCode {
             // execResult = connectionPool.execUpdate(updateSql.toString());
             LOGGER.info(execResult + "\t" + updateSql.toString());
         }
-        connectionPool.colse();
+        connectionPool.close();
     }
 
     public static void threadPoolTest() {

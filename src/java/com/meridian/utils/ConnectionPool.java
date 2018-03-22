@@ -6,11 +6,14 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.meridian.param.DBParam;
 
 /**
  * 
@@ -32,37 +35,64 @@ public class ConnectionPool {
     private int maxCleanupTime = 5;
     /** 空闲时间(分钟) **/
     private int freeTime = 0;
-    /** 等待超时时间 **/
-    private int waitTimeOut = 10;
     /** 关闭标志 **/
     private boolean isClosed = false;
     /** 连接列表 **/
-    private LinkedList<Connection> connectionList = new LinkedList<Connection>();
+    private BlockingQueue<Connection> connections;
+    
+    private DBParam dbp;
+    private boolean useConfig = true;
     
     private Thread thread;
     
     public ConnectionPool() {
-        initializationPool();
+        create();
     }
     
     public ConnectionPool(int maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
-        initializationPool();
+        create();
     }
     
-    public int getWaitTimeOut() {
-        return waitTimeOut;
-    }
-
-    public void setWaitTimeOut(int waitTimeOut) {
-        this.waitTimeOut = waitTimeOut;
+    public ConnectionPool(int maxPoolSize, DBParam dbp) {
+        this.maxPoolSize = maxPoolSize;
+        this.dbp = dbp;
+        this.useConfig = false;
+        create();
     }
     
-    private void initializationPool() {
+    private void _put(Connection connection) {
+        try {
+            connections.put(connection);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private Connection _get() {
+        while (true) {
+            try {
+                return connections.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private Connection _mcgc() {
+        if (useConfig) {
+            return MysqlConnect.getConnection();
+        } else {
+            return MysqlConnect.getConnection(dbp.getHost(), dbp.getHost(), dbp.getUsername(), dbp.getPassword(), dbp.getDatabase());
+        }
+    }
+    
+    private void create() {
+        connections = new ArrayBlockingQueue<Connection>(10);
         for (int i = 0; i < initPoolSize; i++) {
-            Connection connection = MysqlConnect.getConnection();
+            Connection connection = _mcgc();
             if (MysqlConnect.isValid(connection)) {
-                connectionList.add(connection);
+                _put(connection);
                 currentSize++;
             } else {
                 i--;
@@ -94,34 +124,17 @@ public class ConnectionPool {
         }
         freeTime = 0;
         Connection connection;
-        int waitTime = 0;
         while (true) {
-            if (connectionList.size() > 0) {
-                connection = connectionList.getFirst();
-                connectionList.removeFirst();
-                if (MysqlConnect.isValid(connection)) {
-                    return connection;
-                } else {
-                    currentSize--;
-                    continue;
-                }
-            } else if (connectionList.size() == 0 && currentSize < maxPoolSize) {
-                connection = MysqlConnect.getConnection();
-                if (MysqlConnect.isValid(connection)) {
-                    currentSize++;
-                    return connection;
-                } else {
-                    continue;
-                }
-            } else if (waitTime > waitTimeOut) {
-                throw new RuntimeException("连接数达到上限,请等待...");
+            if (connections.size() == 0 && currentSize < maxPoolSize) {
+                connection = _mcgc();
+                currentSize++;
+            } else {
+                connection = _get();
             }
-            
-            try {
-                Thread.sleep(1000);
-                waitTime++;
-            } catch (InterruptedException e) {
-                continue;
+            if (MysqlConnect.isValid(connection)) {
+                return connection;
+            } else {
+                currentSize--;
             }
         }
     }
@@ -167,8 +180,8 @@ public class ConnectionPool {
             LOG.error("连接池已关闭...");
             MysqlConnect.closeConnection(connection);
         } else if (MysqlConnect.isValid(connection)) {
-            if (connectionList.size() < maxPoolSize) {
-                connectionList.addLast(connection);
+            if (connections.size() < maxPoolSize) {
+                _put(connection);
             } else {
                 LOG.error("连接池已达最大连接数,关闭该连接...");
                 MysqlConnect.closeConnection(connection);
@@ -176,14 +189,14 @@ public class ConnectionPool {
         } else {
             LOG.error("连接失效,已丢弃...");
             connection = null;
+            currentSize--;
         }
     }
     
     private void clearConnectionPool() {
         while (true) {
-            if (connectionList.size() < currentSize && connectionList.size() > 1) {
-                MysqlConnect.closeConnection(connectionList.getFirst());
-                connectionList.removeFirst();
+            if (connections.size() < currentSize && connections.size() > 1) {
+                MysqlConnect.closeConnection(_get());
                 currentSize--;
             } else {
                 break;
@@ -191,7 +204,7 @@ public class ConnectionPool {
         }
     }
     
-    public void colse() {
+    public void close() {
         isClosed = true;
         clearConnectionPool();
         if (thread.isAlive()) {

@@ -34,10 +34,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dom4j.Attribute;
@@ -63,18 +60,18 @@ public class TestCode {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestCode.class);
 
     /** 全角对应于ASCII表的可见字符从！开始，偏移值为65281 **/
-    static final char SBC_CHAR_START = 65281; // 全角！
+    private static final char SBC_CHAR_START = 65281; // 全角！
 
     /** 全角对应于ASCII表的可见字符到～结束，偏移值为65374 **/
-    static final char SBC_CHAR_END = 65374; // 全角～
+    private static final char SBC_CHAR_END = 65374; // 全角～
 
     /** ASCII表中除空格外的可见字符与对应的全角字符的相对偏移 **/
-    static final int CONVERT_STEP = 65248; // 全角半角转换间隔
+    private static final int CONVERT_STEP = 65248; // 全角半角转换间隔
 
     private static String desktopPath = "D:/Desktop/";
 
     /**
-     * @param args
+     * @param args a
      */
     public static void main(String[] args) {
         long begin = System.currentTimeMillis();
@@ -189,59 +186,61 @@ public class TestCode {
 
         // continuousData();
 
-        final Set<String> targets = new HashSet<String>();
-        String[] sids = { "gbnew", "gbold", "gjnew", "gjold" };
-//        String[] sids = { "gjnew" };
-        List<Thread> threads = new ArrayList<Thread>();
-        for (final String sid : sids) {
-            final DBParam dbp = new DBParam();
-            dbp.setHost("10.1.1.102");
-            dbp.setPort("1521");
-            dbp.setUsername("phyexam");
-            dbp.setPassword("meridian");
-            dbp.setSid(sid);
-            final DBParam tdbp = new DBParam();
-            tdbp.setHost("10.1.1.102");
-            tdbp.setPort("1521");
-            tdbp.setPassword("meridian");
-            tdbp.setSid("orcl");
-            tdbp.setUsername(sid);
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    OracleTransfer ot = new OracleTransfer(dbp);
-                    ot.set(targets, "jfjzyy301_" + sid, 50000);  // 50000
-//                    ot.start2Oracle(tdbp, 20);
-                    ot.start2Mysql(10);
-                }
-            };
-            Thread thread = new Thread(runnable);
-            threads.add(thread);
-            thread.start();
-        }
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+//        final Set<String> targets = new HashSet<String>();
+//        String[] sids = { "gbnew", "gbold", "gjnew", "gjold" };
+////        String[] sids = { "gjnew" };
+//        List<Thread> threads = new ArrayList<Thread>();
+//        for (final String sid : sids) {
+//            final DBParam dbp = new DBParam();
+//            dbp.setHost("10.1.1.102");
+//            dbp.setPort("1521");
+//            dbp.setUsername("phyexam");
+//            dbp.setPassword("meridian");
+//            dbp.setSid(sid);
+//            final DBParam tdbp = new DBParam();
+//            tdbp.setHost("10.1.1.102");
+//            tdbp.setPort("1521");
+//            tdbp.setPassword("meridian");
+//            tdbp.setSid("orcl");
+//            tdbp.setUsername(sid);
+//            Runnable runnable = new Runnable() {
+//                public void run() {
+//                    OracleTransfer ot = new OracleTransfer(dbp);
+//                    ot.set(targets, "jfjzyy301_" + sid, 50000);  // 50000
+////                    ot.start2Oracle(tdbp, 20);
+//                    ot.start2Mysql(10);
+//                }
+//            };
+//            Thread thread = new Thread(runnable);
+//            threads.add(thread);
+//            thread.start();
+//        }
+//        for (Thread thread : threads) {
+//            try {
+//                thread.join();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
-//        DBParam dbp = new DBParam();
-//        dbp.setHost("10.1.1.102");
-//        dbp.setPort("1521");
-//        dbp.setUsername("phyexam");
-//        dbp.setPassword("meridian");
-//        dbp.setSid("gbold");
-//        DBParam tdbp = new DBParam();
-//        tdbp.setHost("10.1.1.102");
-//        tdbp.setPort("1521");
-//        tdbp.setUsername("gbold");
-//        tdbp.setPassword("meridian");
-//        tdbp.setSid("orcl");
-//        Set<String> targets = new HashSet<String>();
-//        OracleTransfer ot = new OracleTransfer(dbp);
-//        ot.set(targets, "jfjzyy301_" + dbp.getSid(), 10000);
-//        ot.start2Oracle(tdbp);
+        DBParam dbp = new DBParam();
+        dbp.setHost("10.1.1.102");
+        dbp.setPort("1521");
+        dbp.setUsername("phyexam");
+        dbp.setPassword("meridian");
+        dbp.setSid("gjold");
+        DBParam tdbp = new DBParam();
+        tdbp.setHost("10.1.1.102");
+        tdbp.setPort("1521");
+        tdbp.setUsername("gjold");
+        tdbp.setPassword("meridian");
+        tdbp.setSid("orcl");
+        Set<String> targets = new HashSet<String>();
+        targets.add("PE_DIAGNOSIS_RECORD");
+//        targets.add("PE_GUIDE_RESULT");
+        OracleTransfer ot = new OracleTransfer(dbp);
+        ot.set(targets, "jfjzyy301_" + dbp.getSid(), 10000);
+        ot.start2Oracle(tdbp, 20);
 
         System.out.println(getMemoryInfo(begin));
     }
@@ -370,11 +369,10 @@ public class TestCode {
 
     public static void updateTiradsResult() {
         ConnectionPool connectionPool = new ConnectionPool(5);
-        StringBuffer sql = new StringBuffer();
-        sql.append("SELECT A.orgID, A.PE_ID, B.checkdate, A.noduleNum, A.structure, A.second_structure, A.hyperecho, A.edge, A.ratio, A.calcification");
-        sql.append(" FROM ultrasonography.data_info A");
-        sql.append(" LEFT JOIN ultrasonography.base_info B ON A.orgID = B.orgID AND A.PE_ID = B.PE_ID");
-        List<String[]> list = connectionPool.execQuery(sql.toString());
+        String sql = "SELECT A.orgID, A.PE_ID, B.checkdate, A.noduleNum, A.structure, A.second_structure, A.hyperecho, A.edge, A.ratio, A.calcification"
+                + " FROM ultrasonography.data_info A"
+                + " LEFT JOIN ultrasonography.base_info B ON A.orgID = B.orgID AND A.PE_ID = B.PE_ID";
+        List<String[]> list = connectionPool.execQuery(sql);
         for (int i = 0; i < list.size(); i++) {
             String[] arr = list.get(i);
             NoduleData noduleData = new NoduleData();
@@ -396,10 +394,10 @@ public class TestCode {
             // updateSql.append(" WHERE orgID = " + arr[0] + " AND checkNumber =
             // '" + arr[1]
             // + "' AND checkdate " + checkdate + " AND noduleNum = " + arr[3]);
-            updateSql.append("UPDATE thyroid_nodulesdb.sys_weixin_assessment_result SET tiradsResult = '" + map.get(EnterClass.TIRADS_RESULT) + "'");
-            updateSql.append(" WHERE orgID = " + arr[0] + " AND checkNumber = '" + arr[1] + "' AND noduleNum = " + arr[3]);
+            updateSql.append("UPDATE thyroid_nodulesdb.sys_weixin_assessment_result SET tiradsResult = '").append(map.get(EnterClass.TIRADS_RESULT)).append("'");
+            updateSql.append(" WHERE orgID = ").append(arr[0]).append(" AND checkNumber = '").append(arr[1]).append("' AND noduleNum = ").append(arr[3]);
             boolean execResult = false;
-            // execResult = connectionPool.execUpdate(updateSql.toString());
+            execResult = connectionPool.execUpdate(updateSql.toString());
             LOGGER.info(execResult + "\t" + updateSql.toString());
         }
         connectionPool.close();
@@ -414,10 +412,10 @@ public class TestCode {
             Future<String> future = executorService.submit(task);
             taskList.add(future);
         }
-        String allExecuteResult = "";
+        StringBuffer allExecuteResult = new StringBuffer();
         for (Future<String> future : taskList) {
             try {
-                allExecuteResult += future.get() + "\n";
+                allExecuteResult.append(future.get()).append("\n");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -425,7 +423,7 @@ public class TestCode {
             }
         }
         executorService.shutdown();
-        LOGGER.info(allExecuteResult);
+        LOGGER.info(allExecuteResult.toString());
     }
 
     public static String plusDay(String appointedDay, int num) throws ParseException {
@@ -473,7 +471,7 @@ public class TestCode {
     private static String cm2mm(String string, List<String> oldStrings) {
         Pattern patternNum = Pattern.compile("[0-9]+(\\.[0-9]+)?");
         for (String oldString : oldStrings) {
-            String newString = "";
+            StringBuilder newString = new StringBuilder();
             List<String> oldNums = getMatcherList(patternNum, oldString);
             List<Integer> newNums = new ArrayList<Integer>();
             for (String oldNum : oldNums) {
@@ -482,10 +480,10 @@ public class TestCode {
             }
             Collections.sort(newNums, Collections.reverseOrder());
             for (Integer integer : newNums) {
-                newString += "×" + integer;
+                newString.append("×").append(integer);
             }
-            newString = newString.substring(1) + "mm";
-            string = string.replace(oldString, newString);
+            newString = new StringBuilder(newString.substring(1) + "mm");
+            string = string.replace(oldString, newString.toString());
         }
         return string;
     }
@@ -531,10 +529,10 @@ public class TestCode {
                         continue;
                     }
                     rowR = sheetR.createRow(writeRownum++);
-                    rowR.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(FileOperationUtil.getFileNameNoEx(file.getName()));
-                    rowR.createCell(1, Cell.CELL_TYPE_STRING).setCellValue(PoiUtil.getValue(row.getCell(0)));
-                    rowR.createCell(2, Cell.CELL_TYPE_STRING).setCellValue(PoiUtil.getValue(row.getCell(1)));
-                    rowR.createCell(3, Cell.CELL_TYPE_STRING).setCellValue(PoiUtil.getValue(row.getCell(2)));
+                    rowR.createCell(0, CellType.STRING).setCellValue(FileOperationUtil.getFileNameNoEx(file.getName()));
+                    rowR.createCell(1, CellType.STRING).setCellValue(PoiUtil.getValue(row.getCell(0)));
+                    rowR.createCell(2, CellType.STRING).setCellValue(PoiUtil.getValue(row.getCell(1)));
+                    rowR.createCell(3, CellType.STRING).setCellValue(PoiUtil.getValue(row.getCell(2)));
                 }
                 workbook.close();
             }
@@ -614,20 +612,20 @@ public class TestCode {
                 if (null == row)
                     continue;
                 outRow = outSheet.createRow(rownum);
-                outRow.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(PoiUtil.getValue(row.getCell(0)));
+                outRow.createCell(0, CellType.STRING).setCellValue(PoiUtil.getValue(row.getCell(0)));
                 int outColnum = 1;
                 for (int colnum = 1; colnum <= row.getLastCellNum(); colnum++) {
                     key = PoiUtil.getValue(row.getCell(colnum));
                     if (StringUtils.isBlank(key)) {
                         key = "";
                     }
-                    outRow.createCell(outColnum++, Cell.CELL_TYPE_STRING).setCellValue(key);
+                    outRow.createCell(outColnum++, CellType.STRING).setCellValue(key);
 
                     value = formatMap.get(key);
                     if (StringUtils.isBlank(value) && rownum > 1 && StringUtils.isNotBlank(key)) {
                         value = "None";
                     }
-                    outRow.createCell(outColnum++, Cell.CELL_TYPE_STRING).setCellValue(value);
+                    outRow.createCell(outColnum++, CellType.STRING).setCellValue(value);
                 }
             }
             workbook.close();
@@ -792,7 +790,7 @@ public class TestCode {
                 String indexCode = name2CodeMap.get(indexName);
                 String value;
                 if (indexCode != null) {
-                    String tmp = "";
+                    String tmp;
                     boolean runFlag = false;
                     do {
                         maxSheetNum--;
@@ -874,7 +872,7 @@ public class TestCode {
             String indexName;
             String indexCode;
             String value;
-            String codeConten;
+            StringBuilder codeConten;
             firstRowR.createCell(0).setCellValue("登记流水号");
             for (File file : files) {
                 Workbook workbook = new XSSFWorkbook(file);
@@ -904,28 +902,27 @@ public class TestCode {
                     value = PoiUtil.getValue(row.getCell(1));
                     rowR.createCell(column).setCellValue(value);
                     if (!"".equals(value)) {
-                        codeConten = value + "|$";
+                        codeConten = new StringBuilder(value + "|$");
                         value = PoiUtil.getValue(row.getCell(2));
                         if (value.contains("#%#")) {
                             printFlag = true;
                         }
                         String[] codes = value.split(";");
-                        value = "";
                         for (String code : codes) {
                             int dotNUm = code.indexOf(".");
                             if (dotNUm > 0) {
                                 code = code.substring(0, dotNUm);
                             }
                             try {
-                                codeConten += indexCode + "-" + "0000".substring(code.length()) + code + ";";
+                                codeConten.append(indexCode).append("-").append("0000".substring(code.length())).append(code).append(";");
                             } catch (StringIndexOutOfBoundsException e) {
                                 LOGGER.info("indexCode=" + indexCode + "\tcode=" + code);
                             }
 
                         }
-                        codeConten = codeConten.substring(0, codeConten.length() - 1);
-                        if (!codeContentSet.contains(codeConten)) {
-                            codeContentSet.add(codeConten);
+                        codeConten = new StringBuilder(codeConten.substring(0, codeConten.length() - 1));
+                        if (!codeContentSet.contains(codeConten.toString())) {
+                            codeContentSet.add(codeConten.toString());
                             writer.write(codeConten + "^$^");
                         }
                     }
@@ -976,7 +973,7 @@ public class TestCode {
             String[] handledValues;
             sourceValue = sheet_r.getRow(0).getCell(0).getStringCellValue();
             row_w = sheet_w.createRow(0);
-            row_w.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(sourceValue);
+            row_w.createCell(0, CellType.STRING).setCellValue(sourceValue);
             int colNUm;
             int maxColNUm = 0;
             int splitNum;
@@ -1013,7 +1010,7 @@ public class TestCode {
             titalList.add("CDFI");
             for (String str : titalList) {
                 titalMap.put(str, ++maxColNUm);
-                row_w.createCell(maxColNUm, Cell.CELL_TYPE_STRING).setCellValue(str);
+                row_w.createCell(maxColNUm, CellType.STRING).setCellValue(str);
             }
 
             for (int i = 1; i < sheet_r.getLastRowNum(); i++) {
@@ -1022,7 +1019,7 @@ public class TestCode {
                 handledResult.clear();
                 sourceValue = sheet_r.getRow(i).getCell(0).getStringCellValue();
                 // LOGGER.info(sourceValue);
-                row_w.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(sourceValue);
+                row_w.createCell(0, CellType.STRING).setCellValue(sourceValue);
 
                 handledValues = sourceValue.replaceAll("\r\n|\r|\n", "#@#").replaceAll("\t", "#@#").replaceAll("　", "#@#").replaceAll(" ", "#@#")
                         // .replaceAll("，", "#@#")
@@ -1172,12 +1169,12 @@ public class TestCode {
                     for (String key : titalList) {
                         if (string.contains(key)) {
                             colNUm = titalMap.get(key);
-                            row_w.createCell(colNUm, Cell.CELL_TYPE_STRING).setCellValue(string);
+                            row_w.createCell(colNUm, CellType.STRING).setCellValue(string);
                             break;
                         }
                     }
                     if (colNUm == 0) {
-                        row_w.createCell(++maxColNUm, Cell.CELL_TYPE_STRING).setCellValue(string);
+                        row_w.createCell(++maxColNUm, CellType.STRING).setCellValue(string);
                     }
                 }
             }
@@ -1201,14 +1198,14 @@ public class TestCode {
     }
 
     private static String matchingStr(String str, String patternStr) {
-        String returnStr = "";
+        StringBuilder returnStr = new StringBuilder();
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(str);
         while (matcher.find()) {
-            returnStr += matcher.group();
+            returnStr.append(matcher.group());
         }
 
-        return returnStr;
+        return returnStr.toString();
     }
 
     public static void liuShuiHao_161YiYuan(String sourcePath) {
@@ -1223,7 +1220,7 @@ public class TestCode {
             Workbook wb = new XSSFWorkbook();
             Sheet sheet = wb.createSheet("export data");
             Row titalRow = sheet.createRow(0);
-            Row row = null;
+            Row row;
 
             titalRow.createCell(0).setCellValue("登记流水号");
             titalRow.createCell(1).setCellValue("文件号");
@@ -1249,8 +1246,8 @@ public class TestCode {
                 liuShuiHao = liuShuiHao.substring(0, liuShuiHao.indexOf("性别：")).trim();
 
                 row = sheet.createRow(i + 1);
-                row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(liuShuiHao);
-                row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue(wenJianHao);
+                row.createCell(0, CellType.STRING).setCellValue(liuShuiHao);
+                row.createCell(1, CellType.STRING).setCellValue(wenJianHao);
             }
 
             FileOutputStream outputStream = new FileOutputStream(excelPath, true);
@@ -1380,7 +1377,7 @@ public class TestCode {
             int rowNum = 1;
             String department = "";
             String project = "";
-            String index = "";
+            String index;
             String key;
             String key2;
             String value;
@@ -1398,7 +1395,7 @@ public class TestCode {
             boolean dataFlag;
             boolean rowCreated;
 
-            String indexFullName = "";
+            String indexFullName;
             HashSet<String> indexSet = new HashSet<String>();
 
             for (int i = 0; i < files.size(); i++) {
@@ -1634,15 +1631,17 @@ public class TestCode {
                 int value;
                 String[] s1, s2;
                 while ((str = br.readLine()) != null) {
-                    s1 = str.replaceAll("：         ", ";").replaceAll("：        ", ";").replaceAll("：       ", ";").replaceAll("：      ", ";").replaceAll("：     ", ";").replaceAll("：    ", ";").replaceAll("：   ", ";").replaceAll("：  ", ";").replaceAll("： ", ";").replaceAll("\\[", "")
-                            .replaceAll("\\]", ";").replaceAll("\\>", "").replaceAll("\\<", "").replaceAll("=", ".").replaceAll("\\(", ".").replaceAll("\\)", ".").replaceAll("。", ".").split("、");
+                    s1 = str.replaceAll("： {2,9}", ";").replace("： ", ";").replace("[", "")
+                            .replace("]", ";").replace(">", "").replace("<", "")
+                            .replace("=", ".").replace("(", ".").replace(")", ".")
+                            .replace("。", ".").split("、");
                     for (String cs1 : s1) {
                         s2 = cs1.replaceAll(" ", "").trim().split(";");
                         for (String cs2 : s2) {
                             if (cs2.contains("视力") || cs2.contains("C-UBI") || cs2.contains("STⅡⅢavFv") || cs2.contains("TV") || cs2.contains("Tv") || cs2.contains("avL") || cs2.contains("avl")) {
                                 key = cs2.trim();
                             } else {
-                                key = cs2.replaceAll("\\d+", "").replaceAll("\\.", "").trim();
+                                key = cs2.replaceAll("\\d+", "").replace(".", "").trim();
                             }
 
                             // if (":A提示感染".equals(key))
@@ -1708,36 +1707,36 @@ public class TestCode {
                 Element root = document.getRootElement();
                 for (Element ele1 : (List<Element>) root.elements()) {
                     for (Element ele2 : (List<Element>) ele1.elements()) {
-                        String tmpdata2 = "";
+                        StringBuilder tmpdata2 = new StringBuilder();
                         for (Attribute att3 : (List<Attribute>) ele2.attributes()) {
                             // System.out.print(att3.getValue() + ": ");
-                            tmpdata2 += att3.getValue() + "#:#";
+                            tmpdata2.append(att3.getValue()).append("#:#");
                         }
-                        tmpdata2 += ele2.getText().replaceAll("[\\t\\n\\r]", " ");
+                        tmpdata2.append(ele2.getText().replaceAll("[\\t\\n\\r]", " "));
                         // dataList.add(tmpdata2.replaceAll("[\\t\\n\\r]", "
                         // "));
                         for (Element ele3 : (List<Element>) ele2.elements()) {
-                            String tmpdata3 = "";
+                            StringBuilder tmpdata3 = new StringBuilder();
                             // LOGGER.info();
                             for (Attribute att4 : (List<Attribute>) ele3.attributes()) {
                                 // System.out.print(att4.getValue() + ":");
-                                tmpdata3 += att4.getValue() + "#:#";
+                                tmpdata3.append(att4.getValue()).append("#:#");
                             }
-                            dataList.add(tmpdata3.replaceAll("[\\t\\n\\r]", " "));
+                            dataList.add(tmpdata3.toString().replaceAll("[\\t\\n\\r]", " "));
                             for (Element ele4 : (List<Element>) ele3.elements()) {
-                                String tmpdata4 = "";
+                                StringBuilder tmpdata4 = new StringBuilder();
                                 // LOGGER.info();
                                 for (Attribute att5 : (List<Attribute>) ele4.attributes()) {
                                     // System.out.print(att5.getValue() + ":");
-                                    tmpdata4 += att5.getValue() + "#:#";
+                                    tmpdata4.append(att5.getValue()).append("#:#");
                                 }
                                 for (Element ele5 : (List<Element>) ele4.elements()) {
                                     // System.out.print(ele5.getText() + "|");
-                                    tmpdata4 += ele5.getText() + "#,#";
+                                    tmpdata4.append(ele5.getText()).append("#,#");
                                 }
                                 // System.out.print(ele4.getText());
-                                tmpdata4 += ele4.getText();
-                                dataList.add(tmpdata4.replaceAll("[\\t\\n\\r]", " "));
+                                tmpdata4.append(ele4.getText());
+                                dataList.add(tmpdata4.toString().replaceAll("[\\t\\n\\r]", " "));
                             }
                             // LOGGER.info();
                         }
@@ -1745,7 +1744,7 @@ public class TestCode {
                         // " "));
                     }
                 }
-                String value = "";
+                String value;
                 for (String data_tmp : dataList) {
                     String[] data_f = data_tmp.split("#:#");
                     if (data_f.length == 2 && !data_f[1].equals("")) {
@@ -1782,16 +1781,16 @@ public class TestCode {
         return false;
     }
 
-    public static String getMemoryInfo(long begin) {
+    private static String getMemoryInfo(long begin) {
         Runtime currRuntime = Runtime.getRuntime();
         String nFreeMemory = String.format("%.2f", (currRuntime.freeMemory() / 1024f / 1024));
         String nTotalMemory = String.format("%.2f", (currRuntime.totalMemory() / 1024f / 1024));
         return "Java infos: RunningTime = " + String.format("%.2f", (System.currentTimeMillis() - begin) / 1000f) + "S  FreeMemory = " + nFreeMemory + "M  TotalMemory = " + nTotalMemory + "M";
     }
 
-    public static void copyFile(File oldFile, String newPath) {
+    private static void copyFile(File oldFile, String newPath) {
         try {
-            int byteRead = 0;
+            int byteRead;
             if (oldFile.exists()) { // 文件存在时
                 InputStream inStream = new FileInputStream(oldFile); // 读入原文件
                 FileOutputStream foStream = new FileOutputStream(newPath);
@@ -1810,7 +1809,7 @@ public class TestCode {
 
     }
 
-    public static String convert(String fullStr) {
+    private static String convert(String fullStr) {
         if (StringUtils.isBlank(fullStr)) {
             return "";
         }

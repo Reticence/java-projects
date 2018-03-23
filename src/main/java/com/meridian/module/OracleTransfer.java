@@ -329,15 +329,23 @@ public class OracleTransfer {
                 sql = new StringBuffer("INSERT INTO " + tablename + "  VALUES (");
                 for (int i = 1; i <= columnCount; i++) {
                     String value = rs.getString(i);
-                    if (null == value) {
-                        sql.append("null,");
+                    String columnTypeName = rsmd.getColumnTypeName(i);
+                        if (null == value) {
+                        if (i == 4) {
+                            System.out.println(value);
+                        }
+                        if (columnTypeName.equals("FLOAT") || columnTypeName.equals("NUMBER")) {
+                            sql.append("'0',");
+                        } else {
+                            sql.append("'',");
+                        }
                     } else {
                         value = _getValue(value);
-                        if (rsmd.getColumnType(i) == 93) {
-                            sql.append("TO_DATE('" + value + "', 'YYYY-MM-DD HH24:MI:SS'),");
+                        if (columnTypeName.equals("DATE")) {
+                            sql.append("TO_DATE('").append(value).append("', 'YYYY-MM-DD HH24:MI:SS'),");
                         } else {
                             sql.append("'");
-                            sql.append(value.replace("\\", "\\\\").replace("'", "''"));
+                            sql.append(value.replace("'", "''"));
                             sql.append("',");
                         }
                     }
@@ -348,7 +356,8 @@ public class OracleTransfer {
                 try {
                     tstmt.executeUpdate(sql.toString());
                 } catch (Exception e) {
-                    errors.add(e.toString().replace("\n", " - ") + sql.toString());
+                    System.out.println(e.toString().replace("\n", " - ") + sql.toString());
+//                    errors.add(e.toString().replace("\n", " - ") + sql.toString());
                 }
                 if (++count % numRows == 0) {
                     LOGGER.info("Transfer: " + String.format(SF, DF.format(count)) + "  Thread:" + String.format(SF2, Thread.currentThread().getId()) + "  @" + tablename);
@@ -368,7 +377,6 @@ public class OracleTransfer {
             stmt.executeUpdate(sql);
             return true;
         } catch (Exception e) {
-            System.out.println(sql);
             return false;
         }
         
@@ -377,7 +385,7 @@ public class OracleTransfer {
     private String _getValue(String value) {
         try {
             value = new String(value.getBytes("ISO8859_1"), "GBK");
-            value = value.trim();
+//            value = value.trim();
             if (value.startsWith("-") && value.endsWith("00:00:00")) {
                 value = "1900-01-01 00:00:00";
             }
@@ -397,7 +405,7 @@ public class OracleTransfer {
                 e.printStackTrace();
             }
         } else if (toMysql) {
-            LOGGER.info("Transfer: " + pool.execUpdate(sql.toString()) + " " + info);
+            LOGGER.info("Transfer: " + pool.execUpdate(sql) + " " + info);
         }
     }
 }

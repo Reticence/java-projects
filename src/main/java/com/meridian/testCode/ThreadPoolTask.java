@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.concurrent.Callable;
 
-import com.meridian.utils.ConnectionPool;
+import com.meridian.utils.MysqlConnectionPool;
 
 /**
  * 
@@ -15,17 +15,17 @@ import com.meridian.utils.ConnectionPool;
  * @parameter
  */
 public class ThreadPoolTask implements Callable<String> {
-    private ConnectionPool connectionPool;
+    private MysqlConnectionPool mysqlConnectionPool;
     private String sql;
     
-    public ThreadPoolTask(ConnectionPool connectionPool, String sql) {
-        this.connectionPool = connectionPool;
+    public ThreadPoolTask(MysqlConnectionPool mysqlConnectionPool, String sql) {
+        this.mysqlConnectionPool = mysqlConnectionPool;
         this.sql = sql;
     }
 
     public String call() throws Exception {
         StringBuffer result = new StringBuffer();
-        Connection connection = connectionPool.getConnection();
+        Connection connection = mysqlConnectionPool.getConnection();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -35,7 +35,7 @@ public class ThreadPoolTask implements Callable<String> {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            connectionPool.releaseConnection(connection);
+            mysqlConnectionPool.releaseConnection(connection);
         }
         return result.toString();
     }

@@ -1,36 +1,14 @@
 package com.meridian.testCode;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.alibaba.fastjson.JSON;
+import com.meridian.module.OracleTransfer;
+import com.meridian.nodules.EnterClass;
+import com.meridian.nodules.model.NoduleData;
+import com.meridian.param.DBParam;
+import com.meridian.utils.MysqlConnectionPool;
+import com.meridian.utils.DateUtil;
+import com.meridian.utils.FileOperationUtil;
+import com.meridian.utils.PoiUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -45,15 +23,16 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
-import com.meridian.module.OracleTransfer;
-import com.meridian.nodules.EnterClass;
-import com.meridian.nodules.model.NoduleData;
-import com.meridian.param.DBParam;
-import com.meridian.utils.ConnectionPool;
-import com.meridian.utils.DateUtil;
-import com.meridian.utils.FileOperationUtil;
-import com.meridian.utils.PoiUtil;
+import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestCode {
 
@@ -123,7 +102,7 @@ public class TestCode {
         /** 161医院_超声 **/
         // chaoSheng_161YiYuan("D:/Desktop/161医院_超声.xlsx");
 
-        /** Test Code **/
+        /** MyTest Code **/
         // String sourceStr = "双颈动脉硬化多发斑块形成、左侧颈动脉局部狭窄";
         // String tmpStr;
         // int a = sourceStr.indexOf("左");
@@ -156,7 +135,7 @@ public class TestCode {
         // }
 
         // threadPoolTest();
-        // ConnectionPool connectionPool = new ConnectionPool();
+        // MysqlConnectionPool connectionPool = new MysqlConnectionPool();
 
         /** 甲状腺结节评估 **/
         // EnterClass.batchAssessmentEnter(desktopPath +
@@ -207,8 +186,8 @@ public class TestCode {
 //                public void run() {
 //                    OracleTransfer ot = new OracleTransfer(dbp);
 //                    ot.set(targets, "jfjzyy301_" + sid, 50000);  // 50000
-////                    ot.start2Oracle(tdbp, 20);
-//                    ot.start2Mysql(10);
+//                    ot.start2Oracle(tdbp, 32);
+////                    ot.start2Mysql(18);
 //                }
 //            };
 //            Thread thread = new Thread(runnable);
@@ -226,21 +205,23 @@ public class TestCode {
         DBParam dbp = new DBParam();
         dbp.setHost("10.1.1.102");
         dbp.setPort("1521");
-        dbp.setUsername("phyexam");
+        dbp.setUsername("tjxt");
         dbp.setPassword("meridian");
-        dbp.setSid("gjold");
-        DBParam tdbp = new DBParam();
-        tdbp.setHost("10.1.1.102");
-        tdbp.setPort("1521");
-        tdbp.setUsername("gjold");
-        tdbp.setPassword("meridian");
-        tdbp.setSid("orcl");
+        dbp.setSid("orcl");
+//        DBParam tdbp = new DBParam();
+//        tdbp.setHost("10.1.1.102");
+//        tdbp.setPort("1521");
+//        tdbp.setUsername("tjxt");
+//        tdbp.setPassword("meridian");
+//        tdbp.setSid("orcl");
         Set<String> targets = new HashSet<String>();
-        targets.add("PE_DIAGNOSIS_RECORD");
+//        targets.add("PE_DIAGNOSIS_RECORD");
 //        targets.add("PE_GUIDE_RESULT");
         OracleTransfer ot = new OracleTransfer(dbp);
-        ot.set(targets, "jfjzyy301_" + dbp.getSid(), 10000);
-        ot.start2Oracle(tdbp, 20);
+        ot.set(targets, "jnyxyyzfy", 50000);
+        ot.setCharacterSetConversion(false);
+//        ot.start2Oracle(tdbp, 32);
+        ot.start2Mysql(18);
 
         System.out.println(getMemoryInfo(begin));
     }
@@ -368,11 +349,11 @@ public class TestCode {
     }
 
     public static void updateTiradsResult() {
-        ConnectionPool connectionPool = new ConnectionPool(5);
+        MysqlConnectionPool mysqlConnectionPool = new MysqlConnectionPool(5);
         String sql = "SELECT A.orgID, A.PE_ID, B.checkdate, A.noduleNum, A.structure, A.second_structure, A.hyperecho, A.edge, A.ratio, A.calcification"
                 + " FROM ultrasonography.data_info A"
                 + " LEFT JOIN ultrasonography.base_info B ON A.orgID = B.orgID AND A.PE_ID = B.PE_ID";
-        List<String[]> list = connectionPool.execQuery(sql);
+        List<String[]> list = mysqlConnectionPool.execQuery(sql);
         for (int i = 0; i < list.size(); i++) {
             String[] arr = list.get(i);
             NoduleData noduleData = new NoduleData();
@@ -397,18 +378,18 @@ public class TestCode {
             updateSql.append("UPDATE thyroid_nodulesdb.sys_weixin_assessment_result SET tiradsResult = '").append(map.get(EnterClass.TIRADS_RESULT)).append("'");
             updateSql.append(" WHERE orgID = ").append(arr[0]).append(" AND checkNumber = '").append(arr[1]).append("' AND noduleNum = ").append(arr[3]);
             boolean execResult = false;
-            execResult = connectionPool.execUpdate(updateSql.toString());
+            execResult = mysqlConnectionPool.execUpdate(updateSql.toString());
             LOGGER.info(execResult + "\t" + updateSql.toString());
         }
-        connectionPool.close();
+        mysqlConnectionPool.close();
     }
 
     public static void threadPoolTest() {
-        ConnectionPool connectionPool = new ConnectionPool();
+        MysqlConnectionPool mysqlConnectionPool = new MysqlConnectionPool();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         List<Future<String>> taskList = new ArrayList<Future<String>>();
         for (int i = 0; i < 100; i++) {
-            ThreadPoolTask task = new ThreadPoolTask(connectionPool, "SELECT " + i + ", index_code, index_name FROM checkup_library.meridian_index_list");
+            ThreadPoolTask task = new ThreadPoolTask(mysqlConnectionPool, "SELECT " + i + ", index_code, index_name FROM checkup_library.meridian_index_list");
             Future<String> future = executorService.submit(task);
             taskList.add(future);
         }

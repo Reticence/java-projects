@@ -43,7 +43,7 @@ public abstract class CheckNull {
 	 * 
 	 * 检查list是否为空 包括list的size为0
 	 * 
-	 * @param List
+	 * @param lst
 	 * @return true:空 false：非空
 	 */
 	public static boolean isNull(List lst) {
@@ -65,7 +65,7 @@ public abstract class CheckNull {
      * 
      * 检查set是否为空 包括set的size为0
      * 
-     * @param map
+     * @param set
      * @return
      */
     public static boolean isNull(Set set) {
@@ -76,7 +76,7 @@ public abstract class CheckNull {
 	 * 
 	 * 检查object是否为空
 	 * 
-	 * @param object
+	 * @param obj
 	 * @return
 	 */
 	public static boolean isNull(Object obj) {

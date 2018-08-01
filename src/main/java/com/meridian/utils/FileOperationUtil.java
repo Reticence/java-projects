@@ -103,7 +103,7 @@ public class FileOperationUtil {
     
     /** 
      * 删除目录（文件夹）以及目录下的文件 
-     * @param   sPath被删除目录的文件路径 
+     * @param sPath 被删除目录的文件路径
      * @return  目录删除成功返回true，否则返回false 
      */  
     public static boolean deleteDirectory(String sPath) {
@@ -144,7 +144,7 @@ public class FileOperationUtil {
     
     /**
      * 删除单个文件
-     * @param sPath被删除文件的文件名
+     * @param sPath 被删除文件的文件名
      * @return 单个文件删除成功返回true，否则返回false
      */
     public static boolean deleteFile(String sPath) {

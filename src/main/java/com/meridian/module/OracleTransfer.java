@@ -23,12 +23,12 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import com.meridian.utils.MysqlConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.meridian.param.DBParam;
 import com.meridian.utils.CheckNull;
-import com.meridian.utils.ConnectionPool;
 
 /**
  * 
@@ -48,7 +48,7 @@ public class OracleTransfer {
     private final Map<String, String> rMap = new HashMap<String, String>();
     private final List<String> errors = new ArrayList<String>();
 
-    private ConnectionPool pool;
+    private MysqlConnectionPool pool;
     private BlockingQueue<String[]> queue;
     private Set<String> targets = null;
     private DBParam dbp;
@@ -58,6 +58,7 @@ public class OracleTransfer {
     private boolean toFile = false;
     private boolean toMysql = false;
     private boolean toOracle = false;
+    private boolean characterSetConversion = true;
 
     public OracleTransfer(DBParam dbp) {
         this.dbp = dbp;
@@ -73,6 +74,10 @@ public class OracleTransfer {
         this.writeDB = writeDB;
         this.numRows = numRows;
         queue = new ArrayBlockingQueue<String[]>(numRows * 3);
+    }
+
+    public void setCharacterSetConversion(boolean characterSetConversion) {
+        this.characterSetConversion = characterSetConversion;
     }
 
     public void start2File(String savePath, int maxThreads) {
@@ -107,9 +112,9 @@ public class OracleTransfer {
 
         Connection _conn = oracleConn(dbp);
         List<String> tables = queryTabnles(_conn);
+        pool = new MysqlConnectionPool(maxThreads / 2);
         try {
             queue.put(stopObject);
-            pool = new ConnectionPool(maxThreads / 2);
             boolean b;
             while (true) {
                 String[] infos = queue.take();
@@ -142,6 +147,7 @@ public class OracleTransfer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        pool.close();
     }
 
     public void start2Oracle(DBParam tdbp, int maxThreads) {
@@ -329,19 +335,11 @@ public class OracleTransfer {
                 sql = new StringBuffer("INSERT INTO " + tablename + "  VALUES (");
                 for (int i = 1; i <= columnCount; i++) {
                     String value = rs.getString(i);
-                    String columnTypeName = rsmd.getColumnTypeName(i);
-                        if (null == value) {
-                        if (i == 4) {
-                            System.out.println(value);
-                        }
-                        if (columnTypeName.equals("FLOAT") || columnTypeName.equals("NUMBER")) {
-                            sql.append("'0',");
-                        } else {
-                            sql.append("'',");
-                        }
+                    if (null == value) {
+                        sql.append("null,");
                     } else {
                         value = _getValue(value);
-                        if (columnTypeName.equals("DATE")) {
+                        if (rsmd.getColumnTypeName(i).equals("DATE")) {
                             sql.append("TO_DATE('").append(value).append("', 'YYYY-MM-DD HH24:MI:SS'),");
                         } else {
                             sql.append("'");
@@ -356,8 +354,8 @@ public class OracleTransfer {
                 try {
                     tstmt.executeUpdate(sql.toString());
                 } catch (Exception e) {
-                    System.out.println(e.toString().replace("\n", " - ") + sql.toString());
-//                    errors.add(e.toString().replace("\n", " - ") + sql.toString());
+//                    System.out.println(e.toString().replace("\n", " - ") + sql.toString());
+                    errors.add(e.toString().replace("\n", " - ") + sql.toString());
                 }
                 if (++count % numRows == 0) {
                     LOGGER.info("Transfer: " + String.format(SF, DF.format(count)) + "  Thread:" + String.format(SF2, Thread.currentThread().getId()) + "  @" + tablename);
@@ -384,8 +382,9 @@ public class OracleTransfer {
 
     private String _getValue(String value) {
         try {
-            value = new String(value.getBytes("ISO8859_1"), "GBK");
-//            value = value.trim();
+            if (characterSetConversion) {
+                value = new String(value.getBytes("ISO-8859-1"), "GBK");
+            }
             if (value.startsWith("-") && value.endsWith("00:00:00")) {
                 value = "1900-01-01 00:00:00";
             }
